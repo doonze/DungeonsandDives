@@ -33,3 +33,15 @@ dwarf = {
     'height_min': 56,
     'height_max': 68
 }
+
+gnome = {
+    'race': 'Gnome',
+    'str': 7,
+    'dex': 14,
+    'con': 9,
+    'wis': 9,
+    'int': 14,
+    'chr': 10,
+    'height_min': 56,
+    'height_max': 68
+}
