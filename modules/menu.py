@@ -15,8 +15,10 @@ def start_menu():
         load_saved = input()
         if load_saved == '1':
             opening_text()
+            break
         elif load_saved == '3':
             char_creation()
+            break
         elif load_saved.lower() == 'e':
             raise SystemExit
         else:

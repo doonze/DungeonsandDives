@@ -1,47 +1,80 @@
 human = {
     'race': 'Human',
-    'str': 10,
-    'dex': 10,
-    'con': 10,
-    'wis': 10,
-    'int': 10,
-    'chr': 10,
-    'height_min': 56,
-    'height_max': 68
+    'str': 0,
+    'dex': 0,
+    'con': 0,
+    'wis': 0,
+    'int': 0,
+    'chr': 0,
+    'height': [62, 80],
+    'weight': [135, 250],
+    'age': [15, 60]
+
 }
 
 elf = {
     'race': 'Elf',
-    'str': 8,
-    'dex': 12,
-    'con': 8,
-    'wis': 10,
-    'int': 10,
-    'chr': 12,
-    'height_min': 56,
-    'height_max': 68
+    'str': -2,
+    'dex': 2,
+    'con': -2,
+    'wis': 0,
+    'int': 0,
+    'chr': 2,
+    'height': [68, 86],
+    'weight': [115, 190],
+    'age': [25, 500]
 }
 
 dwarf = {
     'race': 'Dwarf',
-    'str': 12,
-    'dex': 8,
-    'con': 12,
-    'wis': 10,
-    'int': 10,
-    'chr': 8,
-    'height_min': 56,
-    'height_max': 68
+    'str': 2,
+    'dex': -2,
+    'con': 2,
+    'wis': 0,
+    'int': 0,
+    'chr': -2,
+    'height_min': [42, 62],
+    'weight': [150, 275],
+    'age': [20, 250]
 }
 
 gnome = {
     'race': 'Gnome',
-    'str': 7,
-    'dex': 14,
-    'con': 9,
-    'wis': 9,
-    'int': 14,
-    'chr': 10,
-    'height_min': 56,
-    'height_max': 68
+    'str': -3,
+    'dex': 4,
+    'con': -2,
+    'wis': -1,
+    'int': 4,
+    'chr': 0,
+    'height': [36, 52],
+    'weight': [52, 110],
+    'age': [20, 175]
 }
+
+
+halfling = {
+    'race': 'Halfling',
+    'str': -1,
+    'dex': 4,
+    'con': 0,
+    'wis': -2,
+    'int': 0,
+    'chr': 2,
+    'height': [36, 52],
+    'weight': [52, 110],
+    'age': [20, 80]
+}
+
+orc = {
+    'race': 'Orc',
+    'str': 5,
+    'dex': -2,
+    'con': 4,
+    'wis': -2,
+    'int': -3,
+    'chr': -2,
+    'height': [80, 96],
+    'weight': [250, 375],
+    'age': [20, 50]
+}
+
