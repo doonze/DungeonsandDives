@@ -33,7 +33,7 @@ dwarf = {
     'wis': 0,
     'int': 0,
     'chr': -2,
-    'height_min': [42, 62],
+    'height': [42, 62],
     'weight': [150, 275],
     'age': [20, 250]
 }
