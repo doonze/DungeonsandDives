@@ -110,3 +110,14 @@ def pull_saved_char(file_name='char', pull_type="name"):
         for name in loaded_json:
             name_list.append(name)
         return name_list
+
+
+def saved_char_list(char_list):
+    name_dict = {}
+    num = 1
+
+    for name in char_list:
+        name_dict[f'{num}'] = name
+        num += 1
+
+    return name_dict
