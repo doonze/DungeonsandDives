@@ -100,3 +100,13 @@ def save_char(save_dict, file_name):
     f.write(json_save)
     f.close()
 
+
+def pull_saved_char(file_name='char', pull_type="name"):
+    with open(f'saves/{file_name}.json') as f:
+        loaded_json = json.load(f)
+
+    if pull_type == 'name':
+        name_list = []
+        for name in loaded_json:
+            name_list.append(name)
+        return name_list

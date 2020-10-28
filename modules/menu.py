@@ -11,6 +11,7 @@ def start_menu():
     typed_print('(1) Start a new game')
     typed_print('(2) Continue a saved game')
     typed_print('(3) Create a character')
+    typed_print('(4) Load saved game')
     typed_print('(e) Exit game!')
     typed_print("Please enter an option [1-3,e]: ", nl='')
 
@@ -22,10 +23,13 @@ def start_menu():
         elif load_saved == '3':
             char_creation()
             break
+        elif load_saved == '4':
+            char_creation()
+            break
         elif load_saved.lower() == 'e':
             raise SystemExit
         else:
-            typed_print('Invalid option! Enter a number 1-3 or e to exit! [1-3,e]: ',nl='')
+            typed_print('Invalid option! Enter a number 1-3 or e to exit! [1-3,e]: ', nl='')
 
 
 
