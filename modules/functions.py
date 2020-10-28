@@ -2,15 +2,21 @@
 from random import random
 from random import randint
 from time import sleep
-
+import json
 import os
 
 
-def typed_print(input_text, speed='1000', nl='\n'):
-    input_text = input_text + nl
-    for char in input_text:
-        sleep(random() * 10.0 / float(speed))
-        print(char, end='', flush=True)
+def typed_print(input_text, speed='200', nl='\n'):
+    # input_text = input_text + nl
+    # for char in input_text:
+    #     sleep(random() * 10.0 / float(speed))
+    #     print(char, end='', flush=True)
+
+    # when ready to turn back on, uncomment the above and delete the below
+    if nl == '\n':
+        print(f'{input_text}')
+    else:
+        print(f'{input_text}', end='')
 
 
 def clear_screen():
@@ -23,10 +29,13 @@ def scroll(time, amount):
         sleep(time)
 
 
-def dice(sides, rolls=1):
+def dice(sides, rolls=1, reroll_ones=False):
     roll = 0
     for d in range(rolls):
         loop_roll = randint(1, int(sides))
+        if reroll_ones:
+            while loop_roll == 1:
+                loop_roll = randint(1, int(sides))
         roll += loop_roll
     return roll
 
@@ -72,3 +81,22 @@ def feet_inch(inches):
     inches = converted[1]
     result = (str(feet) + "'" + str(inches) + '"')
     return result
+
+
+def save_char(save_dict, file_name):
+    save_dict = [save_dict]
+    keyed_dict = dict((item['name'], item) for item in save_dict)
+
+    if os.path.exists(f'saves/{file_name}.json'):
+        with open(f'saves/{file_name}.json') as f:
+            loaded_json = json.load(f)
+        loaded_json.update(keyed_dict)
+        json_save = json.dumps(loaded_json, indent=2)
+    else:
+        list_dict = [keyed_dict]
+        json_save = json.dumps(keyed_dict, indent=2)
+
+    f = open(f"saves/{file_name}.json", 'w')
+    f.write(json_save)
+    f.close()
+

@@ -1,3 +1,7 @@
+# This is the master file for all race info containing all the dictionaries defining
+# all the available races
+
+
 human = {
     'race': 'Human',
     'str': 0,

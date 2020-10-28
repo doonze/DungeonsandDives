@@ -3,7 +3,9 @@ from modules.opening_text import *
 from modules.create_char import char_creation
 
 
+# This is the initial start menu
 def start_menu():
+
     clear_screen()
     typed_print('Welcome to Dungeons and Dives!')
     typed_print('(1) Start a new game')
@@ -11,6 +13,7 @@ def start_menu():
     typed_print('(3) Create a character')
     typed_print('(e) Exit game!')
     typed_print("Please enter an option [1-3,e]: ", nl='')
+
     while True:
         load_saved = input()
         if load_saved == '1':
