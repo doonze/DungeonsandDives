@@ -22,7 +22,7 @@ elf = {
     'dex': 2,
     'con': -2,
     'wis': 0,
-    'int': 0,
+    'int': 2,
     'chr': 2,
     'height': [68, 86],
     'weight': [115, 190],
