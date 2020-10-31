@@ -1,4 +1,6 @@
+from modules.custom_classes import Colors
 from modules.functions import *
+
 
 CRED = '\033[91m'
 CEND = '\33[0m'
@@ -11,10 +13,10 @@ def opening_banner():
     print(r"                                    ,     \    /      , ")
     print(r"                                   / \    )\__/(     / \ ")
     print(r"                                  /   \  (_\  /_)   /   \ ")
-    print("                             ____/_____\\__\\" + CRED + "@  @" + CEND + "/___/_____\\____")
+    print("                             ____/_____\\__\\" + Colors.RED + "@  @" + Colors.END + "/___/_____\\____")
     print(r"                            |             |\../|              |")
     print(r"                            |              \VV/               |")
-    print(r"                            |        " + CRED + "Dungeons & Dives" + CEND + "         |")
+    print(r"                            |        " + Colors.RED + "Dungeons & Dives" + Colors.END + "         |")
     print(r"                            |_________________________________|")
     print(r"                             |    /\ /      \\       \ /\    |")
     print(r"                             |  /   V        ))       V   \  |")
