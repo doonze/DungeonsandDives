@@ -11,7 +11,9 @@ from modules.options import user_options
 cb = Colors.BROWN
 ce = Colors.END
 cr = Colors.RED
-cb = Colors.BLINK
+cbl = Colors.BLINK
+cg = Colors.GREEN
+# todo: need to give all classes doc
 
 
 def typed_print(input_text: str, speed=user_options.type_speed, typeing=user_options.type_print, new_line=True):
@@ -176,8 +178,8 @@ def print_list(input_var, var_type='list', begin='', end='', new_line=True):
             typed_print(f'{Colors.BROWN}({i}){Colors.END} {input_var[i]}')
 
 
-def pull_saved_data_names(file_name):
-    with open(f'data/{file_name}.json') as f:
+def pull_saved_data_names(path_file_name):
+    with open(f'{path_file_name}') as f:
         loaded_json = json.load(f)
         name_list = []
         for race in loaded_json:
@@ -198,23 +200,24 @@ def print_class_data(data_class):
         field_list = []
         for field in fields(data_class):
             field_list.append(field.name)
-            print(f'{field.name.capitalize():<8}: {c.BROWN}{str(getattr(data_class, field.name)):>2}{c.END}')
+            print(f'{field.name.capitalize():<8}: {cb}{str(getattr(data_class, field.name)):>2}{ce}')
         return field_list
     except Exception as ex:
         print(f'Something went wrong: {ex}')
 
 
-def edit_class_data(pulled_race, menu_choice):
+def edit_class_data(pulled_race, menu_choice: str):
     try:
-        typed_print(f'Enter new value. Enter list with the []\'s. '
-                    f'The current value is {c.BROWN}[{getattr(pulled_race, menu_choice)}]{c.END}: {c.BROWN}',
+        typed_print(f'Editing value {cb}[{menu_choice.capitalize()}]{ce}. Enter list with the []\'s. '
+                    f'The current value is {cb}[{getattr(pulled_race, menu_choice)}]{ce}: {cb}',
                     new_line=False)
         while True:
             response = input()
-            print(c.END, end='')
+            print(ce, end='')
             setattr(pulled_race, menu_choice, response)
             clear_screen()
             print_class_data(pulled_race)
+            return pulled_race
             break
     except Exception as ex:
         print(f'Something went wrong: {ex}')
