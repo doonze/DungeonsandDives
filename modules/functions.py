@@ -8,7 +8,10 @@ import json
 import os
 from modules.options import user_options
 
-c = Colors
+cb = Colors.BROWN
+ce = Colors.END
+cr = Colors.RED
+cb = Colors.BLINK
 
 
 def typed_print(input_text: str, speed=user_options.type_speed, typeing=user_options.type_print, new_line=True):

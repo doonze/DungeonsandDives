@@ -1,9 +1,5 @@
 from modules.create_char import char_creation
 from modules.opening_text import *
-from modules.custom_classes import Colors
-
-cb = Colors.BROWN
-ce = Colors.END
 
 
 # This is the initial start menu
@@ -72,7 +68,7 @@ def saved_game_menu():
 
 def admin_menu():
     clear_screen()
-    typed_print(f'{c.RED}{c.BLINK}WARNING!!!{c.END} Use at your own risk, these are creation tools!!\n'
+    typed_print(f'{cb}{cr}WARNING!!!{ce} Use at your own risk, these are creation tools!!\n'
                 f'It would be easy to break the game messing with these settings!')
     print()
     admin_items = {
@@ -84,7 +80,7 @@ def admin_menu():
     }
     print_list(admin_items, var_type='dict')
     print()
-    typed_print(f'Select 1-4 above or (C) to cancel {c.BROWN}[1-4, c]{c.END}: ', new_line=False)
+    typed_print(f'Select 1-4 above or (C) to cancel {cb}[1-4, c]{ce}: ', new_line=False)
 
     while True:
         menu_choice = input()
@@ -100,7 +96,7 @@ def admin_menu():
         elif menu_choice.lower() == 'c':
             start_menu()
         else:
-            typed_print(f'Invalid option! Enter a number 1-4 or e to exit! {c.BROWN}[1-4,c]{c.END}: ', new_line=False)
+            typed_print(f'Invalid option! Enter a number 1-4 or e to exit! {cb}[1-4,c]{ce}: ', new_line=False)
 
 
 def races_admin_menu():
@@ -111,7 +107,7 @@ def races_admin_menu():
     print()
     print_list(item_dict, var_type='dict')
     print()
-    typed_print(f'Choose a choice above or (C) to return to the admin menu {c.BROWN}[?, c]{c.END}:', new_line=False)
+    typed_print(f'Choose a choice above or (C) to return to the admin menu {cb}[?, c]{ce}:', new_line=False)
 
     while True:
         menu_choice = input()
@@ -122,7 +118,7 @@ def races_admin_menu():
             admin_menu()
         else:
             typed_print(f'Invalid option! Enter a number or c to return to admin menu! '
-                        f'{c.BROWN}[?,c]{c.END}: ', new_line=False)
+                        f'{cb}[?,c]{ce}: ', new_line=False)
 
 
 def races_admin_edit(race):
@@ -133,21 +129,33 @@ def races_admin_edit(race):
     field_list = print_class_data(pulled_race)
     print()
     typed_print(f'Enter a field to edit, or (C) to return to Races menu. '
-                f'Example {c.BROWN}[str]{c.END}: ', new_line=False)
+                f'Example {cb}[str]{ce}: ', new_line=False)
 
     while True:
         menu_choice = input().lower()
-        print(c.END, end='')
+        print(ce, end='')
         if menu_choice in field_list:
             edit_class_data(pulled_race, menu_choice)
             print()
-            typed_print(f"Value was updated, enter another to edit or (S) to save: {c.BROWN}", new_line=False)
+            typed_print(f"Value was updated, enter another to edit or (S) to save: {cb}", new_line=False)
             continue
         elif menu_choice == 'c':
             break
         else:
-            typed_print(f' Value entered {c.BROWN}{menu_choice}{c.end} is not valid, please reenter: ', new_line=False)
+            typed_print(f' Value entered {cb}{menu_choice}{ce} is not valid, please reenter: ', new_line=False)
 
     # If 'c' is chosen the loop it broken and we return to prev menu, this is used so we don't get unending while
     # loops nestled going through the menu's
     races_admin_menu()
+
+
+def options_menu():
+    clear_screen()
+    typed_print(f'Options menu:')
+    print()
+    options_choices = {
+        1: "User Menu"
+    }
+    print_list(options_choices, var_type='dict')
+    print()
+    typed_print(f'Enter options menu to view, or (C) to return to main menu {cb}[1,c]{ce}:{cb}')
