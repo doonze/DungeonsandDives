@@ -9,7 +9,7 @@ from random import randint
 def char_creation():
 
     clear_screen()
-
+    # todo: Need to convert this to the new list method once races are all created
     typed_print("Now let's pick a race!")
     typed_print("(1) Human")
     typed_print('(2) Elf')

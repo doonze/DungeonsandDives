@@ -3,6 +3,7 @@ from dataclasses import dataclass, astuple
 
 @dataclass
 class Colors:
+    # todo: fix these, ugly
     """ ANSI color codes """
     BLACK = "\033[0;30m"
     RED = "\033[0;31m"
