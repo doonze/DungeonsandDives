@@ -1,10 +1,11 @@
 # Dungeons And Dives main file
 from modules.menu import *
-
+from modules.options import user_options
 
 # This is the main script for the program
 if __name__ == '__main__':
-    # opening_banner()
+    if user_options.loading_screen:
+        opening_banner()
     clear_screen()
     start_menu()
 
