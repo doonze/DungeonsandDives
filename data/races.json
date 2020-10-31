@@ -1,7 +1,7 @@
 {
     "Human": {
         "race": "Human",
-        "str": 0,
+        "str": "0",
         "dex": 0,
         "con": 0,
         "wis": 0,
