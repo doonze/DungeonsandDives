@@ -17,7 +17,7 @@ def char_creation():
     typed_print('(4) Gnome')
     typed_print('(5) Halfling')
     typed_print('(6) Orc')
-    typed_print('Please choose one of the above or cancel character creation [1-6,c]: ', nl='')
+    typed_print('Please choose one of the above or cancel character creation [1-6,c]: ', new_line=False)
 
     while True:
         char_choice = input()
@@ -43,7 +43,7 @@ def char_creation():
             modules.menu.start_menu()
             break
         else:
-            typed_print('Choice was not valid. Enter 1-6, or c to go back to main menu! [1-6,c]: ', nl='')
+            typed_print('Choice was not valid. Enter 1-6, or c to go back to main menu! [1-6,c]: ', new_line=False)
 
 
 # This function creates the chosen race and displays the results
@@ -95,7 +95,7 @@ def new_char_race(race):
     typed_print(f"{'Intelligence:':<14} {str(int_stat):<4} {str(int_bonus):>2}")
     typed_print(f"{'Charisma:':<14} {str(chr_stat):<4} {str(chr_bonus):>2}")
     print()
-    typed_print("Do you want to (C)ancel creation, (R)eroll, or (A)ccept these stats? [c,r,a]: ", nl='')
+    typed_print("Do you want to (C)ancel creation, (R)eroll, or (A)ccept these stats? [c,r,a]: ", new_line=False)
 
     while True:
         reroll = input()
@@ -124,7 +124,7 @@ def char_class_choice(char_stats):
     typed_print('(5) Strider')
     typed_print('(6) Cleric')
     typed_print('(7) Paladin')
-    typed_print('Please choose a class or quit character creation [1-7,c]: ', nl='')
+    typed_print('Please choose a class or quit character creation [1-7,c]: ', new_line=False)
 
     while True:
         class_choice = input()
@@ -153,7 +153,7 @@ def char_class_choice(char_stats):
             modules.menu.start_menu()
             break
         else:
-            typed_print('Choice was not valid. Enter 1-7, or c to go back to main menu! [1-7,c]: ', nl='')
+            typed_print('Choice was not valid. Enter 1-7, or c to go back to main menu! [1-7,c]: ', new_line=False)
 
 
 # Once a class is chosen, here we start building the final aspects of the character, the new_char_stats dictionary
@@ -220,7 +220,7 @@ def char_class(class_choice, char_stats):
     typed_print(f"{'Charisma:':<14} {str(chr_stat):<4} {str(chr_bonus):>2}")
     print()
 
-    typed_print('Choose (A)ccept to continue with this character or (C) to try again [a,c]: ', nl='')
+    typed_print('Choose (A)ccept to continue with this character or (C) to try again [a,c]: ', new_line=False)
 
     while True:
         final_choice = input()
@@ -231,4 +231,4 @@ def char_class(class_choice, char_stats):
             char_creation()
             break
         else:
-            typed_print('Choice was not valid. Enter A or C! [a,c]: ', nl='')
+            typed_print('Choice was not valid. Enter A or C! [a,c]: ', new_line=False)
