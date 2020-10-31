@@ -1,0 +1,65 @@
+{
+    "Human": {
+        "race": "Human",
+        "str": 0,
+        "dex": 0,
+        "con": 0,
+        "wis": 0,
+        "intel": 0,
+        "chr": 0,
+        "height": [
+            62,
+            80
+        ],
+        "weight": [
+            135,
+            250
+        ],
+        "age": [
+            15,
+            60
+        ]
+    },
+    "Elf": {
+        "race": "Elf",
+        "str": 2,
+        "dex": 2,
+        "con": 0,
+        "wis": 0,
+        "intel": 2,
+        "chr": 2,
+        "height": [
+            45,
+            34
+        ],
+        "weight": [
+            55,
+            110
+        ],
+        "age": [
+            20,
+            270
+        ]
+    },
+    "Dwarf": {
+        "race": "Dwarf",
+        "str": 2,
+        "dex": -2,
+        "con": 2,
+        "wis": 0,
+        "intel": 0,
+        "chr": -2,
+        "height": [
+            42,
+            62
+        ],
+        "weight": [
+            150,
+            275
+        ],
+        "age": [
+            20,
+            250
+        ]
+    }
+}
