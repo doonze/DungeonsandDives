@@ -1,5 +1,6 @@
 # This is the master file for all race info containing all the dictionaries defining
 # all the available races
+from modules.custom_classes import *
 
 
 human = {
@@ -16,6 +17,7 @@ human = {
 
 }
 
+
 elf = {
     'race': 'Elf',
     'str': -2,
@@ -28,6 +30,8 @@ elf = {
     'weight': [115, 190],
     'age': [25, 500]
 }
+
+dwarfs = Race('Dwarf', 2, -2, 2, 0, 0, -2, [42, 62], [150, 275], [20,250])
 
 dwarf = {
     'race': 'Dwarf',
@@ -55,7 +59,6 @@ gnome = {
     'age': [20, 175]
 }
 
-
 halfling = {
     'race': 'Halfling',
     'str': -1,
@@ -81,4 +84,3 @@ orc = {
     'weight': [250, 375],
     'age': [20, 50]
 }
-
