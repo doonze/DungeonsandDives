@@ -1,6 +1,6 @@
 from modules.races import *
 from modules.classes import *
-from modules.functions import dice, typed_print, clear_screen, stat_bonus, feet_inch, save_char
+from modules.functions import dice, typed_print, clear_screen, stat_bonus, feet_inch, save_dictionary
 import modules.menu
 from random import randint
 
@@ -162,73 +162,76 @@ def char_class(class_choice, char_stats):
 
     # Here we're going to roll for hit points, breaking the processes out into the different parts so we can
     # lay it all out for the user then add the total hit points rolled into the dictionary
-    hit_die = class_choice['stats']['hit_die']
-    con_mod = stat_bonus(char_stats['con'])
-    hp_roll = dice(hit_die, reroll_ones=True)
-    tot_hp = hp_roll + con_mod + 8
-    this_class = class_choice['stats']['class']
-    this_race = char_stats['race']
-    char_stats['hp'] = tot_hp
-    char_stats['class'] = this_class
+    try:
+        hit_die = class_choice['stats']['hit_die']
+        con_mod = stat_bonus(char_stats['con'])
+        hp_roll = dice(hit_die, reroll_ones=True)
+        tot_hp = hp_roll + con_mod + 8
+        this_class = class_choice['stats']['class']
+        this_race = char_stats['race']
+        char_stats['hp'] = tot_hp
+        char_stats['class'] = this_class
 
-    # Now well figure out the base AC (10 + Dex mod) and add that to the dictionary
-    base_ac = 10 + stat_bonus(char_stats['dex'])
-    char_stats['ac'] = base_ac
+        # Now well figure out the base AC (10 + Dex mod) and add that to the dictionary
+        base_ac = 10 + stat_bonus(char_stats['dex'])
+        char_stats['ac'] = base_ac
 
-    clear_screen()
-    typed_print(f'You have chosen to become a {this_race} {this_class}!')
-    print()
-    typed_print('Every race starts with 8 hit points. ')
-    typed_print(f'You rolled a d{hit_die} for class hit points getting a roll of {hp_roll}')
-    typed_print(f'with your constitution modifier of {con_mod} your total hit points are now {tot_hp}')
-    print()
-    typed_print(f'Your base armor class will be {base_ac}. (10 + Dexterity modifier)')
-    print()
-    char_stats['name'] = input('Now enter a name for you character, then review character creation: ')
+        clear_screen()
+        typed_print(f'You have chosen to become a {this_race} {this_class}!')
+        print()
+        typed_print('Every race starts with 8 hit points. ')
+        typed_print(f'You rolled a d{hit_die} for class hit points getting a roll of {hp_roll}')
+        typed_print(f'with your constitution modifier of {con_mod} your total hit points are now {tot_hp}')
+        print()
+        typed_print(f'Your base armor class will be {base_ac}. (10 + Dexterity modifier)')
+        print()
+        char_stats['name'] = input('Now enter a name for you character, then review character creation: ')
 
-    clear_screen()
+        clear_screen()
 
-    # Here we figure out what the final stats and modifiers are
-    str_stat = char_stats['str']
-    str_bonus = stat_bonus(int(str_stat))
-    dex_stat = char_stats['dex']
-    dex_bonus = stat_bonus(int(dex_stat))
-    con_stat = char_stats['con']
-    con_bonus = stat_bonus(int(con_stat))
-    wis_stat = char_stats['wis']
-    wis_bonus = stat_bonus(int(wis_stat))
-    int_stat = char_stats['int']
-    int_bonus = stat_bonus(int(int_stat))
-    chr_stat = char_stats['chr']
-    chr_bonus = stat_bonus(int(chr_stat))
-    typed_print('Here are your final characters stats:')
-    print()
-    typed_print(f"You are a {char_stats['race']} {char_stats['class']} named {char_stats['name']}")
-    typed_print(f"Height: {char_stats['height']}")
-    typed_print(f"Weight: {char_stats['weight']} lbs")
-    typed_print(f"Age: {char_stats['age']}")
-    typed_print(f'Hit point: {char_stats["hp"]}')
-    typed_print(f'Armor Class: {char_stats["ac"]}')
-    print()
-    typed_print(f"{'Attribute':<14} {'Stat':<4} Mod")
-    typed_print('-----------------------')
-    typed_print(f"{'Strength:':<14} {str(str_stat):<4} {str(str_bonus):>2}")
-    typed_print(f"{'Dexterity:':<14} {str(dex_stat):<4} {str(dex_bonus):>2}")
-    typed_print(f"{'Constitution:':<14} {str(con_stat):<4} {str(con_bonus):>2}")
-    typed_print(f"{'Wisdom:':<14} {str(wis_stat):<4} {str(wis_bonus):>2}")
-    typed_print(f"{'Intelligence:':<14} {str(int_stat):<4} {str(int_bonus):>2}")
-    typed_print(f"{'Charisma:':<14} {str(chr_stat):<4} {str(chr_bonus):>2}")
-    print()
+        # Here we figure out what the final stats and modifiers are
+        str_stat = char_stats['str']
+        str_bonus = stat_bonus(int(str_stat))
+        dex_stat = char_stats['dex']
+        dex_bonus = stat_bonus(int(dex_stat))
+        con_stat = char_stats['con']
+        con_bonus = stat_bonus(int(con_stat))
+        wis_stat = char_stats['wis']
+        wis_bonus = stat_bonus(int(wis_stat))
+        int_stat = char_stats['int']
+        int_bonus = stat_bonus(int(int_stat))
+        chr_stat = char_stats['chr']
+        chr_bonus = stat_bonus(int(chr_stat))
+        typed_print('Here are your final characters stats:')
+        print()
+        typed_print(f"You are a {char_stats['race']} {char_stats['class']} named {char_stats['name']}")
+        typed_print(f"Height: {char_stats['height']}")
+        typed_print(f"Weight: {char_stats['weight']} lbs")
+        typed_print(f"Age: {char_stats['age']}")
+        typed_print(f'Hit point: {char_stats["hp"]}')
+        typed_print(f'Armor Class: {char_stats["ac"]}')
+        print()
+        typed_print(f"{'Attribute':<14} {'Stat':<4} Mod")
+        typed_print('-----------------------')
+        typed_print(f"{'Strength:':<14} {str(str_stat):<4} {str(str_bonus):>2}")
+        typed_print(f"{'Dexterity:':<14} {str(dex_stat):<4} {str(dex_bonus):>2}")
+        typed_print(f"{'Constitution:':<14} {str(con_stat):<4} {str(con_bonus):>2}")
+        typed_print(f"{'Wisdom:':<14} {str(wis_stat):<4} {str(wis_bonus):>2}")
+        typed_print(f"{'Intelligence:':<14} {str(int_stat):<4} {str(int_bonus):>2}")
+        typed_print(f"{'Charisma:':<14} {str(chr_stat):<4} {str(chr_bonus):>2}")
+        print()
 
-    typed_print('Choose (A)ccept to continue with this character or (C) to try again [a,c]: ', new_line=False)
+        typed_print('Choose (A)ccept to continue with this character or (C) to try again [a,c]: ', new_line=False)
 
-    while True:
-        final_choice = input()
-        if final_choice.lower() == 'a':
-            save_char(char_stats, 'char')
-            break
-        elif final_choice.lower() == 'c':
-            char_creation()
-            break
-        else:
-            typed_print('Choice was not valid. Enter A or C! [a,c]: ', new_line=False)
+        while True:
+            final_choice = input()
+            if final_choice.lower() == 'a':
+                save_dictionary(char_stats, 'saves/char.json', 'name')
+                break
+            elif final_choice.lower() == 'c':
+                char_creation()
+                break
+            else:
+                typed_print('Choice was not valid. Enter A or C! [a,c]: ', new_line=False)
+    except Exception as ex:
+        print(f'Something went wrong in final character creation: {ex}')
