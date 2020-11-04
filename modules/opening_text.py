@@ -1,5 +1,6 @@
 from modules.custom_classes import Colors
 from modules.functions import *
+from modules.terminalsize import get_terminal_size
 
 
 CRED = '\033[91m'
@@ -8,22 +9,26 @@ CBLINK = '\33[5m'
 
 
 def opening_banner():
+    col, rows = get_terminal_size()
+    sp = center_text(int((col/2) - (34/2)))
     clear_screen()
-    scroll(0, 18)
-    print(r"                                    ,     \    /      , ")
-    print(r"                                   / \    )\__/(     / \ ")
-    print(r"                                  /   \  (_\  /_)   /   \ ")
-    print("                             ____/_____\\__\\" + Colors.RED + "@  @" + Colors.END + "/___/_____\\____")
-    print(r"                            |             |\../|              |")
-    print(r"                            |              \VV/               |")
-    print(r"                            |        " + Colors.RED + "Dungeons & Dives" + Colors.END + "         |")
-    print(r"                            |_________________________________|")
-    print(r"                             |    /\ /      \\       \ /\    |")
-    print(r"                             |  /   V        ))       V   \  |")
-    print(r"                             |/     `       //        '     \|")
-    print(r"                             `              V                '")
-    scroll(0.2, 18)
-    sleep(4)
+    scroll(0, rows - 12)
+    print(f'{sp}'r"        ,     \    /      , ")
+    print(f'{sp}'r"       / \    )\__/(     / \ ")
+    print(f'{sp}'r"      /   \  (_\  /_)   /   \ ")
+    print(f'{sp}'" ____/_____\\__\\" + Colors.RED + "@  @" + Colors.END + "/___/_____\\____")
+    print(f'{sp}'r"|             |\../|              |")
+
+    print(f'{sp}'r"|              \VV/               |")
+    print(f'{sp}'r"|        " + Colors.RED + "Dungeons & Dives" + Colors.END + "         |")
+    print(f'{sp}'r"|_________________________________|")
+    print(f'{sp}'r" |    /\ /      \\       \ /\    |")
+    print(f'{sp}'r" |  /   V        ))       V   \  |")
+    print(f'{sp}'r" |/     `       //        '     \|")
+    print(f'{sp}'r" `              V                '")
+    scroll(0.1, int(round(rows/2 - 6)))
+    sleep(3)
+    scroll(0.1, int(round(rows / 2 + 7)))
 
 
 def opening_text():
