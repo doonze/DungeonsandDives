@@ -1,5 +1,6 @@
 from modules.create_char import char_creation
 from modules.opening_text import *
+from modules.custom_classes import Race, Useroptions
 
 
 # todo: build options menu, with pull, edit, save
@@ -36,13 +37,17 @@ def start_menu():
         elif load_saved == '4':
             admin_menu()
             break
+        elif load_saved == '5':
+            options_menu()
+            break
         elif load_saved.lower() == 'e':
             raise SystemExit
         else:
-            typed_print('Invalid option! Enter a number 1-3 or e to exit! [1-3,e]: ', new_line=False)
+            typed_print('Invalid option! Enter a number 1-5 or e to exit! [1-5,e]: ', new_line=False)
 
 
 def saved_game_menu():
+    """List all saved games"""
     clear_screen()
     typed_print('Here are the current saved games:')
     print()
@@ -72,6 +77,7 @@ def saved_game_menu():
 
 
 def admin_menu():
+    """Menu for game admin options"""
     clear_screen()
     typed_print(f'{cbl}{cr}WARNING!!!{ce} Use at your own risk, these are creation tools!!\n'
                 f'It would be easy to break the game messing with these settings!')
@@ -109,6 +115,7 @@ def admin_menu():
 
 # todo: Need to add ways to create NEW races, and delete races
 def races_admin_menu():
+    """Menu for editing, creating, or deleting races"""
     clear_screen()
     pulled_saved_items = pull_saved_data_indexes('data/races.json')
     item_dict = list_to_num_dict(pulled_saved_items)
@@ -116,15 +123,21 @@ def races_admin_menu():
     print()
     print_list(item_dict, var_type='dict')
     print()
-    typed_print(f'Choose a choice above or (C) to return to the admin menu {cb}[?, c]{ce}:{cb} ', new_line=False)
+    typed_print(f'Choose a choice above, (N) to create new race,  or (C) to return to the admin menu'
+                f' {cb}[?, c]{ce}:{cb} ', new_line=False)
 
     while True:
-        menu_choice = input()
+        menu_choice = input().lower()
         print(ce, end='')
         if menu_choice in item_dict.keys():
             races_admin_edit(item_dict[menu_choice])
             break
-        elif menu_choice.lower() == 'c':
+        elif menu_choice == 'c':
+            admin_menu()
+            break
+        elif menu_choice == 'n':
+
+            races_admin_edit(Race(), new=True)
             break
         else:
             typed_print(f'Invalid option! Enter a number or c to return to admin menu! '
@@ -133,35 +146,50 @@ def races_admin_menu():
     admin_menu()
 
 
-def races_admin_edit(race):
+def races_admin_edit(race, new=False):
+    """The actual edit interface for races"""
     clear_screen()
-    typed_print(f'You chose to edit {race}, here are the current values:')
+    if new:
+        typed_print(f"You've chosen to create a new Race.")
+    else:
+        typed_print(f'You chose to edit {race}, here are the current values:')
     print()
-    pulled_race = pull_saved_data('data/races.json', race, Race)
+
+    if not new:
+        pulled_race = pull_saved_data('data/races.json', race, Race)
+    else:
+        pulled_race = race
     field_dict = print_class_data(pulled_race)
+
     print()
-    typed_print(f'Enter a field to edit, (N) to create new race, or (C) to return to Races menu. '
-                f'Example {cb}[str]{ce}:{cb} ', new_line=False)
+    typed_print(f'Enter a field to edit, (D) to delete race, or (C) to return to Races menu. '
+                f'Example {cb}[Str]{ce}:{cb} ', new_line=False)
 
     while True:
-        menu_choice = input().lower()
+        menu_choice = input()
         print(ce, end='')
-        if menu_choice in field_dict:
+        if menu_choice.lower().capitalize() in field_dict:
+            menu_choice = menu_choice.lower().capitalize()
             edited_race = edit_class_data(pulled_race, menu_choice, field_dict)
             if edited_race[1] is True:
                 print()
                 typed_print(f"Value was updated, enter another to edit or (S) to save: {cb}", new_line=False)
             else:
                 typed_print(f'There was an error. Enter a field to edit, or (C) to return to Races menu. '
-                            f'Example {cb}[str]{ce}:{cb} ', new_line=False)
+                            f'Example {cb}[Str]{ce}:{cb} ', new_line=False)
             continue
-        elif menu_choice == 'c':
+        elif menu_choice.lower() == 'c':
             races_admin_menu()
             break
-        elif menu_choice == 'n':
+        elif menu_choice.lower() == 's':
+            save_dictionary(edited_race[0].__dict__, 'data/races.json', 'Race_name'
+                                                                        '')
             break
-        elif menu_choice == 's':
-            save_dictionary(edited_race[0].__dict__, 'data/races.json', 'race')
+        elif menu_choice.lower() == 'd':
+            result = input(f'Are you SURE you wish to {cr}DELETE{ce} Race: {cb}{race}{ce} [yes,n]? ')
+            if result.lower() == 'yes':
+                edited_race = {}
+                save_dictionary(edited_race, 'data/races.json', race, del_dict=True)
             break
         else:
             typed_print(f'Value entered: {cb}{menu_choice}{ce} is not valid, please reenter: {cb} ', new_line=False)
@@ -175,22 +203,64 @@ def options_menu():
     clear_screen()
     typed_print(f'Options menu:')
     print()
-    options_choices = {
-        1: "User Menu"
-    }
-    print_list(options_choices, var_type='dict')
+    pulled_saved_items = pull_saved_data_indexes('data/options.json')
+    item_dict = list_to_num_dict(pulled_saved_items)
+    print_list(item_dict, 'dict')
     print()
-    typed_print(f'Enter options menu to view, or (C) to return to main menu {cb}[1,c]{ce}:{cb}')
+    typed_print(f'Enter options menu to view, or (C) to return to main menu {cb}[?,c]{ce}:{cb} ', new_line=False)
 
     while True:
         menu_choice = input().lower()
         print(ce, end='')
-        if menu_choice == '1':
-
+        if menu_choice in item_dict.keys():
+            options_edit(item_dict[menu_choice])
             break
         elif menu_choice == 'c':
+            start_menu()
             break
         else:
-            typed_print(f' Value entered {cb}{menu_choice}{ce} is not valid, please reenter: {cb} ', new_line=False)
+            typed_print(f'Invalid option! Enter a number or c to return to admin menu! '
+                        f'{cb}[?,c]{ce}:{cb} ', new_line=False)
 
     start_menu()
+
+
+def options_edit(options, new=False):
+    """The actual edit interface for options"""
+    clear_screen()
+    typed_print(f'You chose to edit {options}, here are the current values:')
+    print()
+
+    pulled_options = pull_saved_data('data/options.json', options, Useroptions)
+
+    field_dict = print_class_data(pulled_options, "<15", '')
+
+    print()
+    typed_print(f'Enter a field to edit or (C) to return to options menu. '
+                f'Example {cb}[Type_print]{ce}:{cb} ', new_line=False)
+
+    while True:
+        menu_choice = input()
+        print(ce, end='')
+        if menu_choice.lower().capitalize() in field_dict:
+            menu_choice = menu_choice.lower().capitalize()
+            edited_options = edit_class_data(pulled_options, menu_choice, field_dict)
+            if edited_options[1] is True:
+                print()
+                typed_print(f"Value was updated, enter another to edit, (C) to cancel,"
+                            f" or (S) to save: {cb}", new_line=False)
+            else:
+                typed_print(f'That did not work. Enter a field to edit, or (C) to return to Races menu. '
+                            f'Example {cb}[Type_speed]{ce}:{cb} ', new_line=False)
+            continue
+        elif menu_choice.lower() == 'c':
+            break
+        elif menu_choice.lower() == 's':
+            save_dictionary(edited_options[0].__dict__, 'data/options.json', 'Type')
+            break
+        else:
+            typed_print(f'Value entered: {cb}{menu_choice}{ce} is not valid, please reenter: {cb} ', new_line=False)
+
+    # If 'c' is chosen the loop it broken and we return to prev menu, this is used so we don't get unending while
+    # loops nestled going through the menu's
+    options_menu()
