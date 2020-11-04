@@ -4,7 +4,7 @@ from modules.options import user_options
 
 # This is the main script for the program
 if __name__ == '__main__':
-    if user_options.loading_screen:
+    if user_options.Loading_screen:
         opening_banner()
     clear_screen()
     start_menu()
