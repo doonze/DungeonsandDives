@@ -1,8 +1,8 @@
 {
     "User Options": {
-        "type": "User Options",
-        "type_print": false,
-        "type_speed": 1000,
-        "loading_screen": false
+        "Type": "User Options",
+        "Type_print": false,
+        "Type_speed": 1000,
+        "Loading_screen": false
     }
 }
