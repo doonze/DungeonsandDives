@@ -1,65 +1,128 @@
 {
     "Human": {
-        "race": "Human",
-        "str": "0",
-        "dex": 0,
-        "con": 0,
-        "wis": 0,
-        "intel": 0,
-        "chr": 0,
-        "height": [
+        "Race_name": "Human",
+        "Str": 0,
+        "Dex": 0,
+        "Con": 2,
+        "Wis": 0,
+        "Int": 0,
+        "Cha": 0,
+        "Height": [
             62,
             80
         ],
-        "weight": [
+        "Weight": [
             135,
             250
         ],
-        "age": [
+        "Age": [
             15,
             60
         ]
     },
     "Elf": {
-        "race": "Elf",
-        "str": 2,
-        "dex": 2,
-        "con": 0,
-        "wis": 0,
-        "intel": 2,
-        "chr": 2,
-        "height": [
+        "Race_name": "Elf",
+        "Str": -2,
+        "Dex": 2,
+        "Con": -2,
+        "Wis": 0,
+        "Int": 2,
+        "Cha": 2,
+        "Height": [
             45,
             34
         ],
-        "weight": [
+        "Weight": [
             55,
             110
         ],
-        "age": [
+        "Age": [
             20,
             270
         ]
     },
     "Dwarf": {
-        "race": "Dwarf",
-        "str": 2,
-        "dex": -2,
-        "con": 2,
-        "wis": 0,
-        "intel": 0,
-        "chr": -2,
-        "height": [
+        "Race_name": "Dwarf",
+        "Str": 2,
+        "Dex": -2,
+        "Con": 2,
+        "Wis": 0,
+        "Int": 0,
+        "Cha": -2,
+        "Height": [
             42,
             62
         ],
-        "weight": [
+        "Weight": [
             150,
             275
         ],
-        "age": [
+        "Age": [
             20,
             250
+        ]
+    },
+    "Gnome": {
+        "Race_name": "Gnome",
+        "Str": -3,
+        "Dex": 4,
+        "Con": -2,
+        "Wis": 0,
+        "Int": 4,
+        "Cha": 0,
+        "Height": [
+            36,
+            52
+        ],
+        "Weight": [
+            52,
+            110
+        ],
+        "Age": [
+            20,
+            175
+        ]
+    },
+    "Halfling": {
+        "Race_name": "Halfling",
+        "Str": -1,
+        "Dex": 4,
+        "Con": 0,
+        "Wis": -2,
+        "Int": 0,
+        "Cha": 2,
+        "Height": [
+            36,
+            52
+        ],
+        "Weight": [
+            52,
+            110
+        ],
+        "Age": [
+            20,
+            80
+        ]
+    },
+    "Orc": {
+        "Race_name": "Orc",
+        "Str": 5,
+        "Dex": -2,
+        "Con": 4,
+        "Wis": -2,
+        "Int": -3,
+        "Cha": -2,
+        "Height": [
+            0,
+            0
+        ],
+        "Weight": [
+            0,
+            0
+        ],
+        "Age": [
+            0,
+            0
         ]
     }
 }
