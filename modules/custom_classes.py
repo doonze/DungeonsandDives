@@ -1,4 +1,4 @@
-from dataclasses import dataclass, astuple
+from dataclasses import dataclass
 
 
 @dataclass
@@ -33,27 +33,25 @@ class Colors:
 
 @dataclass
 class Race:
-    """Enter as Race, Str, Dex, Con, Wis, Int, cha, Height, Weight, Age"""
+    """
+    Enter as Race, Str, Dex, Con, Wis, Int, Cha, Height, Weight, Age
+    """
 
-    race: str
-    str: int
-    dex: int
-    con: int
-    wis: int
-    intel: int
-    chr: int
-    height: list
-    weight: list
-    age: list
+    Race_name: str = 'New'
+    Str: int = 0
+    Dex: int = 0
+    Con: int = 0
+    Wis: int = 0
+    Int: int = 0
+    Cha: int = 0
+    Height: list = 0, 0
+    Weight: list = 0, 0
+    Age: list = 0, 0
 
 
 @dataclass
 class Useroptions:
-    type: str = 'User Options'
-    type_print: bool = True
-    type_speed: int = 200
-    loading_screen: bool = True
-
-
-
-
+    Type: str = 'User Options'
+    Type_print: bool = True
+    Type_speed: int = 200
+    Loading_screen: bool = True
