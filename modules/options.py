@@ -5,6 +5,18 @@ import json
 
 
 def pull_saved_data(path_file_name: str, index_name: str, class_name):
+    """
+    One off function just to pull game options.
+
+    :param path_file_name: Full path to file name
+    :type path_file_name: str
+    :param index_name: Indexed name to pull
+    :type index_name: str
+    :param class_name: Name of class to build
+    :type class_name:
+    :return: None
+    :rtype: None
+    """
     with open(f'{path_file_name}') as f:
         loaded_json = json.load(f)
         index_dict = loaded_json[index_name]
