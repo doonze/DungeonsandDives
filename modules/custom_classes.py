@@ -44,9 +44,9 @@ class Race:
     Wis: int = 0
     Int: int = 0
     Cha: int = 0
-    Height: list = 0, 0
-    Weight: list = 0, 0
-    Age: list = 0, 0
+    Height: list = 0
+    Weight: list = 0
+    Age: list = 0
 
 
 @dataclass

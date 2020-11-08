@@ -241,7 +241,6 @@ def options_edit(options, new=False):
                 f'Example {cb}[Type_print]{ce}:{cb} ', new_line=False)
 
     while True:
-        edited_options = ()
         menu_choice = input()
         print(ce, end='')
         if menu_choice.lower().capitalize() in field_dict:

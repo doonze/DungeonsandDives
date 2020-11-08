@@ -3,6 +3,6 @@
         "Type": "User Options",
         "Type_print": false,
         "Type_speed": 1000,
-        "Loading_screen": false
+        "Loading_screen": true
     }
 }

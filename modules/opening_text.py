@@ -1,4 +1,3 @@
-from modules.custom_classes import Colors
 from modules.functions import *
 from modules.terminalsize import get_terminal_size
 
