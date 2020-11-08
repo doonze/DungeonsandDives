@@ -9,11 +9,6 @@ from time import sleep
 from typing import Dict
 from modules.custom_classes import Colors
 from modules.options import user_options
-try:
-    import readline
-except ImportError:
-    import pyreadline as readline
-readline.parse_and_bind("tab: complete")
 
 
 cb = Colors.brown
@@ -22,23 +17,6 @@ cr = Colors.red
 cbl = Colors.blink
 cg = Colors.green
 cbol = Colors.bold
-
-
-def comp(comp_list=None):
-    if comp_list is None:
-        comp_list = []
-    try:
-        def completer(text, state):
-            options = [cmd for cmd in comp_list if cmd.startswith(text)]
-            if state < len(options):
-                return options[state]
-            else:
-                return None
-
-        readline.set_completer(completer)
-
-    except Exception as ex:
-        print(ex)
 
 
 def center_text(spaces: int):

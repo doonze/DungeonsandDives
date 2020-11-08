@@ -160,7 +160,6 @@ def races_admin_edit(race, new=False):
     else:
         pulled_race = race
     field_dict = print_class_data(pulled_race)
-    comp(list(field_dict.keys()))
     print()
     typed_print(f'Enter a field to edit, (D) to delete race, or (C) to return to Races menu. '
                 f'Example {cb}[Str]{ce}:{cb} ', new_line=False)
@@ -196,7 +195,6 @@ def races_admin_edit(race, new=False):
 
     # If 'c' is chosen the loop it broken and we return to prev menu, this is used so we don't get unending while
     # loops nestled going through the menu's
-    comp()
     races_admin_menu()
 
 
@@ -226,7 +224,7 @@ def options_menu():
     start_menu()
 
 
-def options_edit(options, new=False):
+def options_edit(options):
     """The actual edit interface for options"""
     clear_screen()
     typed_print(f'You chose to edit {options}, here are the current values:')
