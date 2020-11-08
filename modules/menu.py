@@ -1,6 +1,6 @@
 from modules.create_char import char_creation
 from modules.opening_text import *
-from modules.custom_classes import Race, Useroptions
+from modules.custom_classes import Race, UserOptions
 
 
 # todo: build options menu, with pull, edit, save
@@ -20,7 +20,7 @@ def start_menu():
     }
     print_list(main_menu, var_type='dict')
     print()
-    typed_print(f"Please enter an option {cb}[1-5,e]{ce}: {cb}", new_line=False)
+    typed_print(f"Please enter an option {cb}[1-5,e]{ce}:{cb} ", new_line=False)
 
     while True:
         load_saved = input()
@@ -43,7 +43,7 @@ def start_menu():
         elif load_saved.lower() == 'e':
             raise SystemExit
         else:
-            typed_print('Invalid option! Enter a number 1-5 or e to exit! [1-5,e]: ', new_line=False)
+            typed_print(f'Invalid option! Enter a number 1-5 or e to exit! {cb}[1-5,e]{ce}: ', new_line=False)
 
 
 def saved_game_menu():
@@ -53,7 +53,7 @@ def saved_game_menu():
     print()
     print_list(list_to_num_dict(pull_saved_data_indexes('saves/char.json')), var_type='dict')
     print()
-    typed_print(f'Select a saved game above or (C) to cancel {cb}[?, c]{ce}:{cb} ', new_line=False)
+    typed_print(f'Select a saved game above or (C) to cancel {cb}[?, c]{ce}: ', new_line=False)
 
     while True:
         load_saved = input()
@@ -160,12 +160,13 @@ def races_admin_edit(race, new=False):
     else:
         pulled_race = race
     field_dict = print_class_data(pulled_race)
-
+    comp(list(field_dict.keys()))
     print()
     typed_print(f'Enter a field to edit, (D) to delete race, or (C) to return to Races menu. '
                 f'Example {cb}[Str]{ce}:{cb} ', new_line=False)
 
     while True:
+        edited_race = ()
         menu_choice = input()
         print(ce, end='')
         if menu_choice.lower().capitalize() in field_dict:
@@ -179,7 +180,6 @@ def races_admin_edit(race, new=False):
                             f'Example {cb}[Str]{ce}:{cb} ', new_line=False)
             continue
         elif menu_choice.lower() == 'c':
-            races_admin_menu()
             break
         elif menu_choice.lower() == 's':
             save_dictionary(edited_race[0].__dict__, 'data/races.json', 'Race_name'
@@ -196,6 +196,7 @@ def races_admin_edit(race, new=False):
 
     # If 'c' is chosen the loop it broken and we return to prev menu, this is used so we don't get unending while
     # loops nestled going through the menu's
+    comp()
     races_admin_menu()
 
 
@@ -231,7 +232,7 @@ def options_edit(options, new=False):
     typed_print(f'You chose to edit {options}, here are the current values:')
     print()
 
-    pulled_options = pull_saved_data('data/options.json', options, Useroptions)
+    pulled_options = pull_saved_data('data/options.json', options, UserOptions)
 
     field_dict = print_class_data(pulled_options, "<15", '')
 
@@ -240,6 +241,7 @@ def options_edit(options, new=False):
                 f'Example {cb}[Type_print]{ce}:{cb} ', new_line=False)
 
     while True:
+        edited_options = ()
         menu_choice = input()
         print(ce, end='')
         if menu_choice.lower().capitalize() in field_dict:

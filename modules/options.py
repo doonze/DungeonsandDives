@@ -1,6 +1,6 @@
 # The file is just for creating global options
 # from modules.functions import pull_saved_data
-from modules.custom_classes import Useroptions
+from modules.custom_classes import UserOptions
 import json
 
 
@@ -24,5 +24,5 @@ def pull_saved_data(path_file_name: str, index_name: str, class_name):
         return filled_class
 
 
-user_options = Useroptions
-user_options = pull_saved_data('data/options.json', 'User Options', Useroptions)
+user_options = UserOptions
+user_options = pull_saved_data('data/options.json', 'User Options', UserOptions)

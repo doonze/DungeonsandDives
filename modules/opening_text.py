@@ -16,11 +16,11 @@ def opening_banner():
     print(f'{sp}'r"        ,     \    /      , ")
     print(f'{sp}'r"       / \    )\__/(     / \ ")
     print(f'{sp}'r"      /   \  (_\  /_)   /   \ ")
-    print(f'{sp}'" ____/_____\\__\\" + Colors.RED + "@  @" + Colors.END + "/___/_____\\____")
+    print(f'{sp}'" ____/_____\\__\\" + Colors.red + "@  @" + Colors.end + "/___/_____\\____")
     print(f'{sp}'r"|             |\../|              |")
 
     print(f'{sp}'r"|              \VV/               |")
-    print(f'{sp}'r"|        " + Colors.RED + "Dungeons & Dives" + Colors.END + "         |")
+    print(f'{sp}'r"|        " + Colors.red + "Dungeons & Dives" + Colors.end + "         |")
     print(f'{sp}'r"|_________________________________|")
     print(f'{sp}'r" |    /\ /      \\       \ /\    |")
     print(f'{sp}'r" |  /   V        ))       V   \  |")

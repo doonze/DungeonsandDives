@@ -5,30 +5,30 @@ from dataclasses import dataclass
 class Colors:
     # todo: fix these, ugly
     """ ANSI color codes """
-    BLACK = "\033[0;30m"
-    RED = "\033[0;31m"
-    GREEN = "\033[0;32m"
-    BROWN = "\033[0;33m"
-    BLUE = "\033[0;34m"
-    PURPLE = "\033[0;35m"
-    CYAN = "\033[0;36m"
-    LIGHT_GRAY = "\033[0;37m"
-    DARK_GRAY = "\033[1;30m"
-    LIGHT_RED = "\033[1;31m"
-    LIGHT_GREEN = "\033[1;32m"
-    YELLOW = "\033[1;33m"
-    LIGHT_BLUE = "\033[1;34m"
-    LIGHT_PURPLE = "\033[1;35m"
-    LIGHT_CYAN = "\033[1;36m"
-    LIGHT_WHITE = "\033[1;37m"
-    BOLD = "\033[1m"
-    FAINT = "\033[2m"
-    ITALIC = "\033[3m"
-    UNDERLINE = "\033[4m"
-    BLINK = "\033[5m"
-    NEGATIVE = "\033[7m"
-    CROSSED = "\033[9m"
-    END = "\033[0m"
+    black: str = "\033[0;30m"
+    red: str = "\033[0;31m"
+    green: str = "\033[0;32m"
+    brown: str = "\033[0;33m"
+    blue: str = "\033[0;34m"
+    purple: str = "\033[0;35m"
+    cyan: str = "\033[0;36m"
+    light_gray: str = "\033[0;37m"
+    dark_gray: str = "\033[1;30m"
+    light_red: str = "\033[1;31m"
+    light_green: str = "\033[1;32m"
+    yellow: str = "\033[1;33m"
+    light_blue: str = "\033[1;34m"
+    light_purple: str = "\033[1;35m"
+    light_cyan: str = "\033[1;36m"
+    light_while = "\033[1;37m"
+    bold: str = "\033[1m"
+    faint: str = "\033[2m"
+    italic: str = "\033[3m"
+    underline: str = "\033[4m"
+    blink: str = "\033[5m"
+    negative: str = "\033[7m"
+    crossed: str = "\033[9m"
+    end: str = "\033[0m"
 
 
 @dataclass
@@ -50,8 +50,57 @@ class Race:
 
 
 @dataclass
-class Useroptions:
+class UserOptions:
     Type: str = 'User Options'
     Type_print: bool = True
     Type_speed: int = 200
     Loading_screen: bool = True
+
+
+@dataclass
+class Archetype:
+    Class: str = "new"
+    Hit_die: int = 0
+    Weapons: list = 'Simple'
+    Armor: list = 'None'
+    Items: list = 'torch'
+    Fitness: int = 0
+    Nimbleness: int = 0
+    Stealth: int = 0
+    Awareness: int = 0
+    Tame: int = 0
+    Insight: int = 0
+    Trickery: int = 0
+    Imposing: int = 0
+    Speech: int = 0
+
+@dataclass
+class Player:
+    Player_race: Race
+    Player_type: Archetype
+    HP: int = 0
+    AC: int = 0
+    XP: int = 0
+
+
+@dataclass
+class SpellBook:
+    Level_1: list
+    Level_2: list
+    Level_3: list
+    Level_4: list
+    Level_5: list
+    Level_6: list
+    Level_7: list
+    Level_8: list
+    Level_9: list
+
+
+@dataclass
+class Spells:
+    Name: str
+    Level: int
+    Range: int
+    Damage: int
+    Description: str
+

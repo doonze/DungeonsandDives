@@ -1,20 +1,44 @@
 # Dungeons and Dives functions
 import json
+import logging
 import os
 from dataclasses import fields
 from random import randint
 from random import random
 from time import sleep
-from typing import Tuple, Dict
+from typing import Dict
 from modules.custom_classes import Colors
 from modules.options import user_options
-import logging
+try:
+    import readline
+except ImportError:
+    import pyreadline as readline
+readline.parse_and_bind("tab: complete")
 
-cb = Colors.BROWN
-ce = Colors.END
-cr = Colors.RED
-cbl = Colors.BLINK
-cg = Colors.GREEN
+
+cb = Colors.brown
+ce = Colors.end
+cr = Colors.red
+cbl = Colors.blink
+cg = Colors.green
+cbol = Colors.bold
+
+
+def comp(comp_list=None):
+    if comp_list is None:
+        comp_list = []
+    try:
+        def completer(text, state):
+            options = [cmd for cmd in comp_list if cmd.startswith(text)]
+            if state < len(options):
+                return options[state]
+            else:
+                return None
+
+        readline.set_completer(completer)
+
+    except Exception as ex:
+        print(ex)
 
 
 def center_text(spaces: int):
@@ -247,14 +271,14 @@ def print_list(input_var, var_type='list', begin='', end='', new_line=True) -> N
             num = 1
             for each in input_var:
                 if new_line:
-                    typed_print(f'{Colors.BROWN}({num}){Colors.END} {each}')
+                    typed_print(f'{Colors.brown}({num}){Colors.end} {each}')
                     num += 1
                 else:
-                    typed_print(f'{Colors.BROWN}({num}){Colors.END} {each}', new_line=False)
+                    typed_print(f'{Colors.brown}({num}){Colors.end} {each}', new_line=False)
                     num += 1
         elif var_type == 'dict':
             for i in input_var:
-                typed_print(f'{Colors.BROWN}({i}){Colors.END} {input_var[i]}')
+                typed_print(f'{Colors.brown}({i}){Colors.end} {input_var[i]}')
     except Exception as ex:
         print(f'Something went wrong printing from list in print_list: {ex}')
 
@@ -422,4 +446,3 @@ def save_dictionary(save_dict: dict, path_file_name: str, index: str, del_dict=F
         f.close()
     except Exception as ex:
         exception_log(f'Something went wrong in the save_dictionary function', ex)
-

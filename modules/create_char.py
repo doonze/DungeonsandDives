@@ -1,4 +1,3 @@
-from modules.races import *
 from modules.classes import *
 from modules.functions import dice, typed_print, clear_screen, stat_bonus, feet_inch, save_dictionary
 import modules.menu
