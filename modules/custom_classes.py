@@ -1,4 +1,7 @@
+from collections import namedtuple
 from dataclasses import dataclass
+
+from typing import List
 
 
 @dataclass
@@ -47,6 +50,7 @@ class Race:
     Height: list = 0
     Weight: list = 0
     Age: list = 0
+    Description: str = ''
 
 
 @dataclass
@@ -59,7 +63,7 @@ class UserOptions:
 
 @dataclass
 class Archetype:
-    Class: str = "new"
+    Name: str = "new"
     Hit_die: int = 0
     Weapons: list = 'Simple'
     Armor: list = 'None'
@@ -73,15 +77,9 @@ class Archetype:
     Trickery: int = 0
     Imposing: int = 0
     Speech: int = 0
-
-@dataclass
-class Player:
-    Player_race: Race
-    Player_type: Archetype
-    HP: int = 0
-    AC: int = 0
-    XP: int = 0
-
+    Spells: bool = False
+    Spell_type: str = None
+    Description: str = ''
 
 @dataclass
 class SpellBook:
@@ -103,4 +101,39 @@ class Spells:
     Range: int
     Damage: int
     Description: str
+
+
+@dataclass
+class Player:
+    Player_name: str = ''
+    Player_race: Race = None
+    Player_type: Archetype = None
+    Player_spells: SpellBook = None
+    HP: int = 0
+    AC: int = 0
+    XP: int = 0
+    Str: int = 0
+    Dex: int = 0
+    Con: int = 0
+    Wis: int = 0
+    Int: int = 0
+    Cha: int = 0
+    Height: str = ''
+    Weight: int = 0
+    Age: int = 0
+
+
+@dataclass
+class Items:
+    Name: str
+    Class: str
+    Type: str
+    Weight: float = 0.0
+    Damage_dice: tuple = (0, 0)
+    Uses: int = 0
+    AC: int = 0
+    Description: str = ''
+
+
+
 
