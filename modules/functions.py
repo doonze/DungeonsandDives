@@ -7,9 +7,9 @@ from random import randint
 from random import random
 from time import sleep
 from typing import Dict
+import jsonpickle
 from modules.custom_classes import Colors
 from modules.options import user_options
-
 
 cb = Colors.brown
 ce = Colors.end
@@ -17,6 +17,9 @@ cr = Colors.red
 cbl = Colors.blink
 cg = Colors.green
 cbol = Colors.bold
+cy = Colors.cyan
+lg = Colors.light_green
+cp = Colors.purple
 
 
 def center_text(spaces: int):
@@ -108,7 +111,7 @@ def dice(sides: int, rolls=1, reroll_ones=False):
     return roll
 
 
-def stat_bonus(stat: int):
+def stat_bonus(stat: int, colored: bool = False):
     """
     Pass the function a stat, and it will return the correct bonus value
 
@@ -117,38 +120,48 @@ def stat_bonus(stat: int):
     :return: Stat bonus
     :rtype: int
     """
+    bonus_int = ''
+
     if stat == 1:
-        return -5
+        bonus_int = -5
     if 2 <= stat <= 3:
-        return -4
+        bonus_int = -4
     if 4 <= stat <= 5:
-        return -3
+        bonus_int = -3
     if 6 <= stat <= 7:
-        return -2
+        bonus_int = -2
     if 8 <= stat <= 9:
-        return -1
+        bonus_int = -1
     if 10 <= stat <= 11:
-        return 0
+        bonus_int = 0
     if 12 <= stat <= 13:
-        return 1
+        bonus_int = 1
     if 14 <= stat <= 15:
-        return 2
+        bonus_int = 2
     if 16 <= stat <= 17:
-        return 3
+        bonus_int =3
     if 18 <= stat <= 19:
-        return 4
+        bonus_int = 4
     if 20 <= stat <= 21:
-        return 5
+        bonus_int = 5
     if 22 <= stat <= 23:
-        return 6
+        bonus_int = 6
     if 24 <= stat <= 25:
-        return 7
+        bonus_int = 7
     if 26 <= stat <= 27:
-        return 7
+        bonus_int = 7
     if 28 <= stat <= 29:
-        return 9
+        bonus_int = 9
     if stat == 30:
-        return 10
+        bonus_int = 10
+
+    if colored:
+        if bonus_int < 0:
+            bonus_int = f'{cr}{bonus_int:>2}{ce}'
+        else:
+            bonus_int = f'{cb}{bonus_int:>2}{ce}'
+
+    return bonus_int
 
 
 def feet_inch(inches: int) -> str:
@@ -282,7 +295,7 @@ def pull_saved_data_indexes(path_file_name) -> list:
         print(f'Something went wrong pulling saved data indexes from dictionary: {ex}')
 
 
-def pull_saved_data(path_file_name: str, index_name: str, class_name: type) -> object:
+def pull_saved_data(path_file_name: str, index_name: str) -> object:
     """
     Pulls data from provided path for the provided index, returns a class object filled with the data from file
 
@@ -290,8 +303,6 @@ def pull_saved_data(path_file_name: str, index_name: str, class_name: type) -> o
     :type path_file_name: str
     :param index_name: Index to pull info from in file
     :type index_name: str
-    :param class_name: Class to fill with pulled info
-    :type class_name: type
     :return: Returns a dataclass object
     :rtype: type
     """
@@ -299,7 +310,7 @@ def pull_saved_data(path_file_name: str, index_name: str, class_name: type) -> o
         with open(f'{path_file_name}') as f:
             loaded_json = json.load(f)
             index_dict = loaded_json[index_name]
-            filled_class = class_name(**index_dict)
+            filled_class = jsonpickle.decode(index_dict)
             return filled_class
     except Exception as ex:
         print(f'Something went wrong pulling saved data: {ex}')
@@ -351,10 +362,16 @@ def edit_class_data(dataclass, menu_choice: str, field_dict: dict) -> (object, b
         while True:
             response = input()
             print(ce, end='')
+            responses = []
             if set_type is list:
                 response = response.translate(str.maketrans('', '', ' []'))
-                response = [int(i) for i in response.split(',')]
-                setattr(dataclass, menu_choice, set_type(response))
+                response = [i for i in response.split(',')]
+                for each in response:
+                    if each.isdigit():
+                        responses.append(int(each))
+                    else:
+                        responses.append(each)
+                setattr(dataclass, menu_choice, set_type(responses))
             else:
                 if type(set_type(response)) == bool:
                     if response == 'False':
@@ -365,6 +382,8 @@ def edit_class_data(dataclass, menu_choice: str, field_dict: dict) -> (object, b
                         raise Exception(f'"{cb}{response}{ce}" was not a True/False answer!')
                 setattr(dataclass, menu_choice, set_type(response))
             clear_screen()
+            typed_print(f'{cb}{menu_choice}{ce} was updated to {cb}{response}{ce}!')
+            print()
             print_class_data(dataclass)
             success = True
             return dataclass, success
@@ -405,8 +424,9 @@ def save_dictionary(save_dict: dict, path_file_name: str, index: str, del_dict=F
         if not del_dict:  # If this wasn't called to delete a dictionary this runs
             #  We convert the passed dictionary to a dictionary list so we can then pull value out we
             #  want to index by. Then we index the whole dictionary by that value.
-            save_dict = [save_dict]
-            keyed_dict = dict((item[index], item) for item in save_dict)
+            # save_dict = [save_dict]
+            index_dict = {index: save_dict}
+            # keyed_dict = dict((item[index], item) for item in save_dict)
 
         if os.path.exists(f'{path_file_name}'):
             with open(f'{path_file_name}') as f:
@@ -414,13 +434,13 @@ def save_dictionary(save_dict: dict, path_file_name: str, index: str, del_dict=F
             if del_dict:  # If it was called to delete a dictionary just need the index to delete
                 loaded_json.pop(index)  # This pops (deletes) the passed index name from dictionary
             else:
-                loaded_json.update(keyed_dict)  # Adds the indexed dictionary to the existing dictionary of dictionaries
+                loaded_json.update(index_dict)  # Adds the indexed dictionary to the existing dictionary of dictionaries
             json_save = json.dumps(loaded_json, indent=4)  # Then converts it to a json
         else:  # If file didn't already exist we create it with one single dict inside
-            json_save = json.dumps(keyed_dict, indent=4)
+            json_save = json.dumps(index_dict, indent=4)
 
         f = open(f"{path_file_name}", 'w')
         f.write(json_save)
         f.close()
     except Exception as ex:
-        exception_log(f'Something went wrong in the save_dictionary function', ex)
+        exception_log(f'Something went wrong in the save_dictionary function - ', ex)
