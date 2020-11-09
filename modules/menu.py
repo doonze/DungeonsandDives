@@ -1,6 +1,7 @@
 from modules.create_char import char_creation
 from modules.custom_classes import Race, Archetype, Player, UserOptions
 from modules.opening_text import *
+from modules.main_game import start_game
 
 
 # This is the initial start menu
@@ -25,20 +26,15 @@ def start_menu():
         response = input()
         print(f'{ce}', end='')
         if response == '1':
-            opening_text()
-            break
+            return opening_text()
         elif response == '2':
-            saved_game_menu()
-            break
+            return saved_game_menu()
         elif response == '3':
-            char_creation()
-            break
+            return char_creation()
         elif response == '4':
-            admin_menu()
-            break
+            return admin_menu()
         elif response == '5':
-            options_menu()
-            break
+            return options_menu()
         elif response.lower() == 'e':
             raise SystemExit
         else:
@@ -60,15 +56,12 @@ def saved_game_menu():
         menu_choice = input()
         print(ce, end='')
         if menu_choice in item_dict.keys():
-            load_saved(item_dict[menu_choice])
-            break
+            return load_saved(item_dict[menu_choice])
         elif menu_choice == 'c':
-            break
+            return start_menu()
         else:
             typed_print(f'Invalid option! Enter a number or c to return to admin menu! '
                         f'{cb}[?,c]{ce}:{cb} ', new_line=False)
-
-    start_menu()
 
 
 def load_saved(saved_game: str):
@@ -108,8 +101,6 @@ def admin_menu():
     admin_items = {
         1: 'Races admin',
         2: 'Archetype admin',
-        3: '...',
-        4: '...',
         'c': 'Return to main menu!'
     }
     print_list(admin_items, var_type='dict')
@@ -120,20 +111,13 @@ def admin_menu():
         menu_choice = input()
         print(ce, end='')
         if menu_choice == '1':
-            races_admin_menu()
-            break
+            return races_admin_menu()
         elif menu_choice == '2':
-            archetype_admin_menu()
-            break
-        elif menu_choice == '4':
-
-            break
+            return archetype_admin_menu()
         elif menu_choice.lower() == 'c':
-            break
+            return start_menu()
         else:
             typed_print(f'Invalid option! Enter a number 1-4 or e to exit! {cb}[1-4,c]{ce}:{cb} ', new_line=False)
-
-    start_menu()
 
 
 def races_admin_menu():
@@ -152,19 +136,14 @@ def races_admin_menu():
         menu_choice = input().lower()
         print(ce, end='')
         if menu_choice in item_dict.keys():
-            races_admin_edit(item_dict[menu_choice])
-            break
+            return races_admin_edit(item_dict[menu_choice])
         elif menu_choice == 'c':
-            break
+            return admin_menu()
         elif menu_choice == 'n':
-
-            races_admin_edit(Race(), new=True)
-            break
+            return races_admin_edit(Race(), new=True)
         else:
             typed_print(f'Invalid option! Enter a number or c to return to admin menu! '
                         f'{cb}[?,c]{ce}:{cb} ', new_line=False)
-
-    admin_menu()
 
 
 def races_admin_edit(race, new=False):
@@ -202,22 +181,24 @@ def races_admin_edit(race, new=False):
                             f'Example {cb}[Str]{ce}:{cb} ', new_line=False)
             continue
         elif menu_choice.lower() == 'c':
-            break
+            return races_admin_menu()
         elif menu_choice.lower() == 's':
             save_dictionary(jsonpickle.encode(edited), 'data/races.json', edited.Race_name)
-            break
+            return races_admin_menu()
         elif menu_choice.lower() == 'd':
             result = input(f'Are you SURE you wish to {cr}DELETE{ce} Race: {cb}{race}{ce} [yes,n]? ')
             if result.lower() == 'yes':
                 edited_race = {}
                 save_dictionary(edited_race, 'data/races.json', race, del_dict=True)
-            break
+                return races_admin_menu()
+            else:
+                input(f'Race: {cb}{race}{ce} was not deleted. Press enter to continue...')
+                return races_admin_menu()
         else:
             typed_print(f'Value entered: {cb}{menu_choice}{ce} is not valid, please reenter: {cb} ', new_line=False)
 
     # If 'c' is chosen the loop it broken and we return to prev menu, this is used so we don't get unending while
     # loops nestled going through the menu's
-    races_admin_menu()
 
 
 def options_menu():
@@ -234,16 +215,12 @@ def options_menu():
         menu_choice = input().lower()
         print(ce, end='')
         if menu_choice in item_dict.keys():
-            options_edit(item_dict[menu_choice])
-            break
+            return options_edit(item_dict[menu_choice])
         elif menu_choice == 'c':
-            start_menu()
-            break
+            return start_menu()
         else:
             typed_print(f'Invalid option! Enter a number or c to return to admin menu! '
                         f'{cb}[?,c]{ce}:{cb} ', new_line=False)
-
-    start_menu()
 
 
 def options_edit(options):
@@ -267,7 +244,6 @@ def options_edit(options):
         if menu_choice.lower().capitalize() in field_dict:
             menu_choice = menu_choice.lower().capitalize()
             edited_options = edit_class_data(pulled_options, menu_choice, field_dict, UserOptions)
-
             edited = edited_options[0]
             success = edited_options[1]
             if success is True:
@@ -279,16 +255,15 @@ def options_edit(options):
                             f'Example {cb}[Type_speed]{ce}:{cb} ', new_line=False)
             continue
         elif menu_choice.lower() == 'c':
-            break
+            return options_menu()
         elif menu_choice.lower() == 's':
             save_dictionary(jsonpickle.encode(edited), 'data/options.json', edited.Type)
-            break
+            return options_menu()
         else:
             typed_print(f'Value entered: {cb}{menu_choice}{ce} is not valid, please reenter: {cb} ', new_line=False)
 
     # If 'c' is chosen the loop it broken and we return to prev menu, this is used so we don't get unending while
-    # loops nestled going through the menu's
-    options_menu()
+    # loops nestled going through the menu'
 
 
 def archetype_admin_menu():
@@ -307,18 +282,14 @@ def archetype_admin_menu():
         menu_choice = input().lower()
         print(ce, end='')
         if menu_choice in item_dict.keys():
-            archetype_admin_edit(item_dict[menu_choice])
-            break
+            return archetype_admin_edit(item_dict[menu_choice])
         elif menu_choice == 'c':
-            break
+            return admin_menu()
         elif menu_choice == 'n':
-            archetype_admin_edit(Archetype(), new=True)
-            break
+            return archetype_admin_edit(Archetype(), new=True)
         else:
             typed_print(f'Invalid option! Enter a number or c to return to admin menu! '
                         f'{cb}[?,c]{ce}:{cb} ', new_line=False)
-
-    admin_menu()
 
 
 def archetype_admin_edit(archetype, new=False):
@@ -356,19 +327,18 @@ def archetype_admin_edit(archetype, new=False):
                             f'Example {cb}[Str]{ce}:{cb} ', new_line=False)
             continue
         elif menu_choice.lower() == 'c':
-            break
+            return archetype_admin_menu()
         elif menu_choice.lower() == 's':
             save_dictionary(jsonpickle.encode(edited), 'data/archetype.json', edited.Name)
-            break
+            return archetype_admin_menu()
         elif menu_choice.lower() == 'd':
-            result = input(f'Are you SURE you wish to {cr}DELETE{ce} Race: {cb}{archetype}{ce} [yes,n]? ')
+            result = input(f'Are you SURE you wish to {cr}DELETE{ce} Archetype: {cb}{archetype}{ce} [yes,n]? ')
             if result.lower() == 'yes':
                 edited_archetype = {}
                 save_dictionary(edited_archetype, 'data/archetype.json', archetype, del_dict=True)
-            break
+                return archetype_admin_menu()
+            else:
+                input(f'Archetype: {cb}{archetype}{ce} not deleted! Press enter to continue...')
+                return archetype_admin_menu()
         else:
             typed_print(f'Value entered: {cb}{menu_choice}{ce} is not valid, please reenter: {cb} ', new_line=False)
-
-    # If 'c' is chosen the loop it broken and we return to prev menu, this is used so we don't get unending while
-    # loops nestled going through the menu's
-    archetype_admin_menu()

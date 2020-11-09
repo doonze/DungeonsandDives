@@ -1,11 +1,11 @@
-from modules import menu
+import modules.menu as menu
+from modules.main_game import start_game
 from modules.custom_classes import *
 from modules.functions import *
 
 
 # This function lets you pick your race
 def char_creation():
-
     clear_screen()
 
     pulled_saved_items = pull_saved_data_indexes('data/races.json')
@@ -20,20 +20,16 @@ def char_creation():
         menu_choice = input().lower()
         print(ce, end='')
         if menu_choice in item_dict.keys():
-            new_char_race(item_dict[menu_choice])
-            break
+            return new_char_race(item_dict[menu_choice])
         elif menu_choice == 'c':
-            break
+            return menu.start_menu()
         else:
             typed_print(f'Invalid option! Enter a number or c to return to admin menu! '
                         f'{cb}[?,c]{ce}:{cb} ', new_line=False)
 
-    menu.start_menu()
-
 
 # This function creates the chosen race and displays the results
 def new_char_race(race):
-
     # This creates the new_char_stats dictionary, pulls the race settings from the races.py file
     # and randomly creates the details of the character using the parameters specified in the races file.
     pulled_race = pull_saved_data('data/races.json', race)
@@ -82,6 +78,7 @@ def new_char_race(race):
                     f"or {cb}(A){ce}ccept these stats? {cb}[c,r,a]{ce}:{cb} ", new_line=False)
 
         return pre_char_build
+
     char_build: Player = Player()
     if first_run:
         first_run ^= first_run
@@ -94,11 +91,9 @@ def new_char_race(race):
             char_build = roll_char()
             continue
         elif reroll.lower() == 'c':
-            menu.char_creation()
-            break
+            return menu.start_menu()
         elif reroll.lower() == 'a':
-            char_class_choice(char_build)
-            break
+            return char_class_choice(char_build)
         else:
             typed_print('Invalid choice! Choose (C)ancel creation, (R)eroll, or (A)ccept! [c,r,a]:  ')
 
@@ -113,25 +108,24 @@ def char_class_choice(char_build: Player):
     print()
     print_list(item_dict, var_type='dict')
     print()
-    typed_print(f'Please choose a class or quit character creation {cb}[?,c]{ce}:{cb} ', new_line=False)
+    typed_print(f'Please choose a class or ({cb}C{ce})ancel character creation {cb}[?,c]{ce}:{cb} ', new_line=False)
 
     while True:
         menu_choice = input().lower()
         print(ce, end='')
         if menu_choice in item_dict.keys():
-            char_class_build(char_build, item_dict[menu_choice])
-            break
+            return char_class_build(char_build, item_dict[menu_choice])
+
         elif menu_choice == 'c':
-            break
+            return {'Success': False}
         else:
-            typed_print(f'Invalid option! Enter a number or c to return to admin menu! '
+            typed_print(f'Invalid option! Enter a number or ({cb}C{ce})ancel character creation! '
                         f'{cb}[?,c]{ce}:{cb} ', new_line=False)
 
 
 # Once a class is chosen, here we start building the final aspects of the character, the new_char_stats dictionary
 # has been passed down to the function and renamed char_stats
-def char_class_build(char_build: Player, player_choice: str):
-
+def char_class_build(char_build: Player, player_choice: str) -> dict:
     pulled_archetype = pull_saved_data('data/archetype.json', player_choice)
     char_build.Player_type = pulled_archetype
 
@@ -189,11 +183,12 @@ def char_class_build(char_build: Player, player_choice: str):
             final_choice = input()
             if final_choice.lower() == 'a':
                 save_dictionary(jsonpickle.encode(char_build), 'saves/char.json', char_build.Player_name)
-                break
+                return start_game(char_build.Player_name)
             elif final_choice.lower() == 'c':
-                char_creation()
-                break
+                return menu.start_menu()
             else:
                 typed_print('Choice was not valid. Enter A or C! [a,c]: ', new_line=False)
     except Exception as ex:
         print(f'Something went wrong in final character creation: {ex}')
+        input('Press enter to continue to start menu....')
+        return menu.start_menu()
