@@ -1,6 +1,10 @@
-from modules.classes import *
-from modules.functions import dice, typed_print, clear_screen, stat_bonus, feet_inch, save_dictionary
-import modules.menu
+import dataclasses
+
+import jsonpickle
+
+from modules import menu
+from modules.custom_classes import *
+from modules.functions import *
 from random import randint
 
 
@@ -8,41 +12,28 @@ from random import randint
 def char_creation():
 
     clear_screen()
-    # todo: Need to convert this to the new list method once races are all created
+
+    pulled_saved_items = pull_saved_data_indexes('data/races.json')
+    item_dict = list_to_num_dict(pulled_saved_items)
     typed_print("Now let's pick a race!")
-    typed_print("(1) Human")
-    typed_print('(2) Elf')
-    typed_print('(3) Dwarf')
-    typed_print('(4) Gnome')
-    typed_print('(5) Halfling')
-    typed_print('(6) Orc')
-    typed_print('Please choose one of the above or cancel character creation [1-6,c]: ', new_line=False)
+    print()
+    print_list(item_dict, var_type='dict')
+    print()
+    typed_print(f'Please choose one of the above or cancel character creation {cb}[?,c]{ce}:{cb} ', new_line=False)
 
     while True:
-        char_choice = input()
-        if char_choice == '1':
-            new_char_race(human)
+        menu_choice = input().lower()
+        print(ce, end='')
+        if menu_choice in item_dict.keys():
+            new_char_race(item_dict[menu_choice])
             break
-        elif char_choice == '2':
-            new_char_race(elf)
-            break
-        elif char_choice == '3':
-            new_char_race(dwarf)
-            break
-        elif char_choice == '4':
-            new_char_race(gnome)
-            break
-        elif char_choice == '5':
-            new_char_race(halfling)
-            break
-        elif char_choice == '6':
-            new_char_race(orc)
-            break
-        elif char_choice.lower() == 'c':
-            modules.menu.start_menu()
+        elif menu_choice == 'c':
             break
         else:
-            typed_print('Choice was not valid. Enter 1-6, or c to go back to main menu! [1-6,c]: ', new_line=False)
+            typed_print(f'Invalid option! Enter a number or c to return to admin menu! '
+                        f'{cb}[?,c]{ce}:{cb} ', new_line=False)
+
+    menu.start_menu()
 
 
 # This function creates the chosen race and displays the results
@@ -50,62 +41,68 @@ def new_char_race(race):
 
     # This creates the new_char_stats dictionary, pulls the race settings from the races.py file
     # and randomly creates the details of the character using the parameters specified in the races file.
-    new_char_stats = {
-        'race': race['race'],
-        'str': int(race['str']) + dice(6, rolls=3, reroll_ones=True),
-        'dex': int(race['dex']) + dice(6, rolls=3, reroll_ones=True),
-        'con': int(race['con']) + dice(6, rolls=3, reroll_ones=True),
-        'wis': int(race['wis']) + dice(6, rolls=3, reroll_ones=True),
-        'int': int(race['int']) + dice(6, rolls=3, reroll_ones=True),
-        'chr': int(race['chr']) + dice(6, rolls=3, reroll_ones=True),
-        'height': feet_inch(randint(int(race['height'][0]), int(race['height'][1]))),
-        'weight': str(randint(race['weight'][0], race['weight'][1])),
-        'age': str(randint(race['age'][0], race['age'][1]))
-    }
+    pulled_race = pull_saved_data('data/races.json', race, Race)
+    first_run = True
 
-    # Here we figure out what the modifiers are for the above rolled stats
-    str_stat = new_char_stats['str']
-    str_bonus = stat_bonus(int(str_stat))
-    dex_stat = new_char_stats['dex']
-    dex_bonus = stat_bonus(int(dex_stat))
-    con_stat = new_char_stats['con']
-    con_bonus = stat_bonus(int(con_stat))
-    wis_stat = new_char_stats['wis']
-    wis_bonus = stat_bonus(int(wis_stat))
-    int_stat = new_char_stats['int']
-    int_bonus = stat_bonus(int(int_stat))
-    chr_stat = new_char_stats['chr']
-    chr_bonus = stat_bonus(int(chr_stat))
-    clear_screen()
+    def roll_char():
+        pre_char_build = Player(Player_race=pulled_race)
+        pre_char_build.Str = dice(6, rolls=3, reroll_ones=True) + pre_char_build.Player_race.Str
+        pre_char_build.Dex = dice(6, rolls=3, reroll_ones=True) + pre_char_build.Player_race.Dex
+        pre_char_build.Con = dice(6, rolls=3, reroll_ones=True) + pre_char_build.Player_race.Con
+        pre_char_build.Wis = dice(6, rolls=3, reroll_ones=True) + pre_char_build.Player_race.Wis
+        pre_char_build.Int = dice(6, rolls=3, reroll_ones=True) + pre_char_build.Player_race.Int
+        pre_char_build.Cha = dice(6, rolls=3, reroll_ones=True) + pre_char_build.Player_race.Cha
+        pre_char_build.Height = feet_inch(randint(int(pre_char_build.Player_race.Height[0]),
+                                                  int(pre_char_build.Player_race.Height[1])))
+        pre_char_build.Weight = randint(pre_char_build.Player_race.Weight[0], pre_char_build.Player_race.Weight[1])
+        pre_char_build.Age = randint(pre_char_build.Player_race.Age[0], pre_char_build.Player_race.Age[1])
 
-    # Here we start printing out the created character stats
-    typed_print('Here are your characters stats:')
-    typed_print(f"Race: {new_char_stats['race']}")
-    typed_print(f"Height: {new_char_stats['height']}")
-    typed_print(f"Weight: {new_char_stats['weight']} lbs")
-    typed_print(f"Age: {new_char_stats['age']}")
-    print()
-    typed_print(f"{'Attribute':<14} {'Stat':<4} Mod")
-    typed_print('-----------------------')
-    typed_print(f"{'Strength:':<14} {str(str_stat):<4} {str(str_bonus):>2}")
-    typed_print(f"{'Dexterity:':<14} {str(dex_stat):<4} {str(dex_bonus):>2}")
-    typed_print(f"{'Constitution:':<14} {str(con_stat):<4} {str(con_bonus):>2}")
-    typed_print(f"{'Wisdom:':<14} {str(wis_stat):<4} {str(wis_bonus):>2}")
-    typed_print(f"{'Intelligence:':<14} {str(int_stat):<4} {str(int_bonus):>2}")
-    typed_print(f"{'Charisma:':<14} {str(chr_stat):<4} {str(chr_bonus):>2}")
-    print()
-    typed_print("Do you want to (C)ancel creation, (R)eroll, or (A)ccept these stats? [c,r,a]: ", new_line=False)
+        # Here we figure out what the modifiers are for the above rolled stats
+        str_bonus = stat_bonus(int(pre_char_build.Str), colored=True)
+        dex_bonus = stat_bonus(int(pre_char_build.Dex), colored=True)
+        con_bonus = stat_bonus(int(pre_char_build.Con), colored=True)
+        wis_bonus = stat_bonus(int(pre_char_build.Wis), colored=True)
+        int_bonus = stat_bonus(int(pre_char_build.Int), colored=True)
+        cha_bonus = stat_bonus(int(pre_char_build.Cha), colored=True)
+        clear_screen()
+
+        # Here we start printing out the created character stats
+        typed_print('Here are your characters stats:')
+        print()
+        typed_print(f"Race: {cb}{pre_char_build.Player_race.Race_name}{ce}")
+        typed_print(f"Height: {cb}{pre_char_build.Height}{ce}")
+        typed_print(f"Weight: {cb}{pre_char_build.Weight} lbs{ce}")
+        typed_print(f"Age: {cb}{pre_char_build.Age}{ce}")
+        print()
+        typed_print(f"{'Attribute':<14} {'Stat':<4} Mod")
+        typed_print('-----------------------')
+        typed_print(f"{'Strength:':<14} {cb}{pre_char_build.Str:<4}{ce} {str(str_bonus):>2}")
+        typed_print(f"{'Dexterity:':<14} {cb}{pre_char_build.Dex:<4}{ce} {str(dex_bonus):>2}")
+        typed_print(f"{'Constitution:':<14} {cb}{pre_char_build.Con:<4}{ce} {str(con_bonus):>2}")
+        typed_print(f"{'Wisdom:':<14} {cb}{pre_char_build.Wis:<4}{ce} {str(wis_bonus):>2}")
+        typed_print(f"{'Intelligence:':<14} {cb}{pre_char_build.Int:<4}{ce} {str(int_bonus):>2}")
+        typed_print(f"{'Charisma:':<14} {cb}{pre_char_build.Cha:<4}{ce} {str(cha_bonus):>2}")
+        print()
+        typed_print(f"Do you want to {cb}(C){ce}ancel creation, {cb}(R){ce}eroll, "
+                    f"or {cb}(A){ce}ccept these stats? {cb}[c,r,a]{ce}:{cb} ", new_line=False)
+
+        return pre_char_build
+
+    if first_run:
+        first_run = False
+        char_build = roll_char()
 
     while True:
         reroll = input()
+        print(ce, end='')
         if reroll.lower() == "r":
-            new_char_race(race)
-            break
+            char_build = roll_char()
+            continue
         elif reroll.lower() == 'c':
-            modules.menu.char_creation()
+            menu.char_creation()
             break
         elif reroll.lower() == 'a':
-            char_class_choice(new_char_stats)
+            char_class_choice(char_build)
             break
         else:
             typed_print('Invalid choice! Choose (C)ancel creation, (R)eroll, or (A)ccept! [c,r,a]:  ')
@@ -113,67 +110,50 @@ def new_char_race(race):
 
 # This function is for choosing a class. The new_char_stats dictionary was passed to this function that was
 # created in the previous function. This is so it can then be passed on and added to by the class creation function
-def char_class_choice(char_stats):
+def char_class_choice(char_build: Player):
     clear_screen()
-    typed_print('Ok, now to choose a class!')
-    typed_print('(1) Warrior')
-    typed_print('(2) Thief')
-    typed_print('(3) Magi')
-    typed_print('(4) Monk')
-    typed_print('(5) Strider')
-    typed_print('(6) Cleric')
-    typed_print('(7) Paladin')
-    typed_print('Please choose a class or quit character creation [1-7,c]: ', new_line=False)
+    pulled_saved_items = pull_saved_data_indexes('data/archetype.json')
+    item_dict = list_to_num_dict(pulled_saved_items)
+    typed_print(f'Now choose an Archetype for your {char_build.Player_race.Race_name}!')
+    print()
+    print_list(item_dict, var_type='dict')
+    print()
+    typed_print(f'Please choose a class or quit character creation {cb}[?,c]{ce}:{cb} ', new_line=False)
 
     while True:
-        class_choice = input()
-        if class_choice == '1':
-            char_class(warrior, char_stats)
+        menu_choice = input().lower()
+        print(ce, end='')
+        if menu_choice in item_dict.keys():
+            char_class_build(char_build, item_dict[menu_choice])
             break
-        elif class_choice == '2':
-            char_class(thief, char_stats)
-            break
-        elif class_choice == '3':
-            char_class(magi, char_stats)
-            break
-        elif class_choice == '4':
-            char_class(monk, char_stats)
-            break
-        elif class_choice == '5':
-            char_class(strider, char_stats)
-            break
-        elif class_choice == '6':
-            char_class(cleric, char_stats)
-            break
-        elif class_choice == '7':
-            char_class(paladin, char_stats)
-            break
-        elif class_choice.lower() == 'c':
-            modules.menu.start_menu()
+        elif menu_choice == 'c':
             break
         else:
-            typed_print('Choice was not valid. Enter 1-7, or c to go back to main menu! [1-7,c]: ', new_line=False)
+            typed_print(f'Invalid option! Enter a number or c to return to admin menu! '
+                        f'{cb}[?,c]{ce}:{cb} ', new_line=False)
 
 
 # Once a class is chosen, here we start building the final aspects of the character, the new_char_stats dictionary
 # has been passed down to the function and renamed char_stats
-def char_class(class_choice, char_stats):
+def char_class_build(char_build: Player, player_choice: str):
+
+    pulled_archetype = pull_saved_data('data/archetype.json', player_choice, Archetype)
+    char_build.Player_type = pulled_archetype
+    first_run = True
 
     # Here we're going to roll for hit points, breaking the processes out into the different parts so we can
     # lay it all out for the user then add the total hit points rolled into the dictionary
     try:
-        hit_die = class_choice['stats']['hit_die']
-        con_mod = stat_bonus(char_stats['con'])
+        hit_die = char_build.Player_type.Hit_die
+        con_mod = stat_bonus(char_build.Con)
         hp_roll = dice(hit_die, reroll_ones=True)
         tot_hp = hp_roll + con_mod + 8
-        this_class = class_choice['stats']['class']
-        this_race = char_stats['race']
-        char_stats['hp'] = tot_hp
-        char_stats['class'] = this_class
+        this_class = char_build.Player_type.Name
+        this_race = char_build.Player_race.Race_name
+        char_build.HP = tot_hp
 
         # Now well figure out the base AC (10 + Dex mod) and add that to the dictionary
-        base_ac = 10 + stat_bonus(char_stats['dex'])
-        char_stats['ac'] = base_ac
+        char_build.AC = 10 + stat_bonus(char_build.Dex)
 
         clear_screen()
         typed_print(f'You have chosen to become a {this_race} {this_class}!')
@@ -182,42 +162,31 @@ def char_class(class_choice, char_stats):
         typed_print(f'You rolled a d{hit_die} for class hit points getting a roll of {hp_roll}')
         typed_print(f'with your constitution modifier of {con_mod} your total hit points are now {tot_hp}')
         print()
-        typed_print(f'Your base armor class will be {base_ac}. (10 + Dexterity modifier)')
+        typed_print(f'Your base armor class will be {char_build.AC}. (10 + Dexterity modifier)')
         print()
-        char_stats['name'] = input('Now enter a name for you character, then review character creation: ')
+        char_build.Player_name = input('Now enter a name for you character, then review character creation: ')
 
         clear_screen()
 
         # Here we figure out what the final stats and modifiers are
-        str_stat = char_stats['str']
-        str_bonus = stat_bonus(int(str_stat))
-        dex_stat = char_stats['dex']
-        dex_bonus = stat_bonus(int(dex_stat))
-        con_stat = char_stats['con']
-        con_bonus = stat_bonus(int(con_stat))
-        wis_stat = char_stats['wis']
-        wis_bonus = stat_bonus(int(wis_stat))
-        int_stat = char_stats['int']
-        int_bonus = stat_bonus(int(int_stat))
-        chr_stat = char_stats['chr']
-        chr_bonus = stat_bonus(int(chr_stat))
         typed_print('Here are your final characters stats:')
         print()
-        typed_print(f"You are a {char_stats['race']} {char_stats['class']} named {char_stats['name']}")
-        typed_print(f"Height: {char_stats['height']}")
-        typed_print(f"Weight: {char_stats['weight']} lbs")
-        typed_print(f"Age: {char_stats['age']}")
-        typed_print(f'Hit point: {char_stats["hp"]}')
-        typed_print(f'Armor Class: {char_stats["ac"]}')
+        typed_print(f"You are a {char_build.Player_race.Race_name} {char_build.Player_type.Name}"
+                    f" named {char_build.Player_name}")
+        typed_print(f"Height: {char_build.Height}")
+        typed_print(f"Weight: {char_build.Weight} lbs")
+        typed_print(f"Age: {char_build.Age}")
+        typed_print(f'Hit point: {char_build.HP}')
+        typed_print(f'Armor Class: {char_build.AC}')
         print()
         typed_print(f"{'Attribute':<14} {'Stat':<4} Mod")
         typed_print('-----------------------')
-        typed_print(f"{'Strength:':<14} {str(str_stat):<4} {str(str_bonus):>2}")
-        typed_print(f"{'Dexterity:':<14} {str(dex_stat):<4} {str(dex_bonus):>2}")
-        typed_print(f"{'Constitution:':<14} {str(con_stat):<4} {str(con_bonus):>2}")
-        typed_print(f"{'Wisdom:':<14} {str(wis_stat):<4} {str(wis_bonus):>2}")
-        typed_print(f"{'Intelligence:':<14} {str(int_stat):<4} {str(int_bonus):>2}")
-        typed_print(f"{'Charisma:':<14} {str(chr_stat):<4} {str(chr_bonus):>2}")
+        typed_print(f"{'Strength:':<14} {char_build.Str:<4} {stat_bonus(char_build.Str, colored=True)}")
+        typed_print(f"{'Dexterity:':<14} {char_build.Dex:<4} {stat_bonus(char_build.Dex, colored=True)}")
+        typed_print(f"{'Constitution:':<14} {char_build.Con:<4} {stat_bonus(char_build.Con, colored=True)}")
+        typed_print(f"{'Wisdom:':<14} {char_build.Wis:<4} {stat_bonus(char_build.Wis, colored=True)}")
+        typed_print(f"{'Intelligence:':<14} {char_build.Int:<4} {stat_bonus(char_build.Int, colored=True)}")
+        typed_print(f"{'Charisma:':<14} {char_build.Cha:<4} {stat_bonus(char_build.Cha, colored=True)}")
         print()
 
         typed_print('Choose (A)ccept to continue with this character or (C) to try again [a,c]: ', new_line=False)
@@ -225,7 +194,7 @@ def char_class(class_choice, char_stats):
         while True:
             final_choice = input()
             if final_choice.lower() == 'a':
-                save_dictionary(char_stats, 'saves/char.json', 'name')
+                save_dictionary(jsonpickle.encode(char_build), 'saves/char.json', char_build.Player_name)
                 break
             elif final_choice.lower() == 'c':
                 char_creation()
@@ -234,3 +203,4 @@ def char_class(class_choice, char_stats):
                 typed_print('Choice was not valid. Enter A or C! [a,c]: ', new_line=False)
     except Exception as ex:
         print(f'Something went wrong in final character creation: {ex}')
+
