@@ -1,11 +1,6 @@
-import dataclasses
-
-import jsonpickle
-
 from modules import menu
 from modules.custom_classes import *
 from modules.functions import *
-from random import randint
 
 
 # This function lets you pick your race
@@ -41,8 +36,8 @@ def new_char_race(race):
 
     # This creates the new_char_stats dictionary, pulls the race settings from the races.py file
     # and randomly creates the details of the character using the parameters specified in the races file.
-    pulled_race = pull_saved_data('data/races.json', race, Race)
-    first_run = True
+    pulled_race = pull_saved_data('data/races.json', race)
+    first_run: bool = True
 
     def roll_char():
         pre_char_build = Player(Player_race=pulled_race)
@@ -87,9 +82,9 @@ def new_char_race(race):
                     f"or {cb}(A){ce}ccept these stats? {cb}[c,r,a]{ce}:{cb} ", new_line=False)
 
         return pre_char_build
-
+    char_build: Player = Player()
     if first_run:
-        first_run = False
+        first_run ^= first_run
         char_build = roll_char()
 
     while True:
@@ -137,9 +132,8 @@ def char_class_choice(char_build: Player):
 # has been passed down to the function and renamed char_stats
 def char_class_build(char_build: Player, player_choice: str):
 
-    pulled_archetype = pull_saved_data('data/archetype.json', player_choice, Archetype)
+    pulled_archetype = pull_saved_data('data/archetype.json', player_choice)
     char_build.Player_type = pulled_archetype
-    first_run = True
 
     # Here we're going to roll for hit points, breaking the processes out into the different parts so we can
     # lay it all out for the user then add the total hit points rolled into the dictionary
@@ -203,4 +197,3 @@ def char_class_build(char_build: Player, player_choice: str):
                 typed_print('Choice was not valid. Enter A or C! [a,c]: ', new_line=False)
     except Exception as ex:
         print(f'Something went wrong in final character creation: {ex}')
-

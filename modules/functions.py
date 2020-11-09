@@ -6,7 +6,6 @@ from dataclasses import fields
 from random import randint
 from random import random
 from time import sleep
-from typing import Dict
 import jsonpickle
 from modules.custom_classes import Colors
 from modules.options import user_options
@@ -111,14 +110,16 @@ def dice(sides: int, rolls=1, reroll_ones=False):
     return roll
 
 
-def stat_bonus(stat: int, colored: bool = False):
+def stat_bonus(stat: int, colored: bool = False) -> any:
     """
     Pass the function a stat, and it will return the correct bonus value
 
     :param stat: Pass the stat
     :type stat: int
-    :return: Stat bonus
-    :rtype: int
+    :param colored: True if formatted/colored string is desired
+    :type colored: bool
+    :return: Stat bonus as int or colored string (negative is red)
+    :rtype: any
     """
     bonus_int = ''
 
@@ -139,7 +140,7 @@ def stat_bonus(stat: int, colored: bool = False):
     if 14 <= stat <= 15:
         bonus_int = 2
     if 16 <= stat <= 17:
-        bonus_int =3
+        bonus_int = 3
     if 18 <= stat <= 19:
         bonus_int = 4
     if 20 <= stat <= 21:
@@ -210,7 +211,7 @@ def save_char(save_dict: dict, file_name: str) -> None:
         print(f'Something went wrong converting list to numbered dictionary: {ex}')
 
 
-def list_to_num_dict(char_list: list) -> Dict[str, str]:
+def list_to_num_dict(char_list: list) -> dict:
     """
     Pass this function a list and it will turn it into a numbered dictionary
 
@@ -232,7 +233,7 @@ def list_to_num_dict(char_list: list) -> Dict[str, str]:
         print(f'Something went wrong converting list to numbered dictionary: {ex}')
 
 
-def print_list(input_var, var_type='list', begin='', end='', new_line=True) -> None:
+def print_list(input_var, var_type='dict', begin='', end='', new_line=True) -> None:
     """
     Pass this function a list or dictionary and it will print out all items in the object
 
@@ -295,7 +296,7 @@ def pull_saved_data_indexes(path_file_name) -> list:
         print(f'Something went wrong pulling saved data indexes from dictionary: {ex}')
 
 
-def pull_saved_data(path_file_name: str, index_name: str) -> object:
+def pull_saved_data(path_file_name: str, index_name: str) -> any:
     """
     Pulls data from provided path for the provided index, returns a class object filled with the data from file
 
@@ -304,7 +305,7 @@ def pull_saved_data(path_file_name: str, index_name: str) -> object:
     :param index_name: Index to pull info from in file
     :type index_name: str
     :return: Returns a dataclass object
-    :rtype: type
+    :rtype: any
     """
     try:
         with open(f'{path_file_name}') as f:
@@ -316,12 +317,12 @@ def pull_saved_data(path_file_name: str, index_name: str) -> object:
         print(f'Something went wrong pulling saved data: {ex}')
 
 
-def print_class_data(data_class: object, col_one: str = '<10', col_two: str = '<2') -> dict:
+def print_class_data(data_class: any, col_one: str = '<10', col_two: str = '<2') -> dict:
     """
     Pass a class object and this function will print out it's fields and values
 
     :param data_class: dataclass you want to print
-    :type data_class: object
+    :type data_class: any
     :param col_one: Width of key column with justification (<^>) Ex. '<2'
     :type col_one: str
     :param col_two: Width of value column with justification (<^>) Ex. '<10'
@@ -339,7 +340,7 @@ def print_class_data(data_class: object, col_one: str = '<10', col_two: str = '<
         print(f'Something went wrong printing class data: {ex}')
 
 
-def edit_class_data(dataclass, menu_choice: str, field_dict: dict) -> (object, bool):
+def edit_class_data(dataclass, menu_choice: str, field_dict: dict, class_type) -> (any, bool):
     """
     Pass a dataclass(dataclass), a key in the dataclass(menu_choice), and a dictionary of the
     key names as keys and the types as values. It will ensure the data is updated with the correct
@@ -351,9 +352,12 @@ def edit_class_data(dataclass, menu_choice: str, field_dict: dict) -> (object, b
     :type menu_choice: str
     :param field_dict: Dictionary of {keys:types}
     :type field_dict: dict
+    :param class_type: Pass dataclass
+    :type class_type: any
     :return: Returns a list containing the updated dataclass and a bool if it was successful
-    :rtype: (object, bool)
+    :rtype: (any, bool)
     """
+    dataclass: class_type
     try:
         typed_print(f'Editing value {cb}[{menu_choice.capitalize()}]{ce}. Enter list separated by ",". '
                     f'The current value is {cb}[{getattr(dataclass, menu_choice)}]{ce}: {cb}',
@@ -410,7 +414,7 @@ def save_dictionary(save_dict: dict, path_file_name: str, index: str, del_dict=F
      saves/char.json\n
 
      :param save_dict: Dictionary to save to file (not used for deletes)
-     :type save_dict: dict
+     :type save_dict: typing._SpecialForm
      :param path_file_name: path/filename.extension format
      :type path_file_name: str
      :param index: Index to save it into the file under (or to delete)
@@ -419,7 +423,7 @@ def save_dictionary(save_dict: dict, path_file_name: str, index: str, del_dict=F
      :type del_dict: bool
      """
     try:
-        keyed_dict = {}  # Just to avoid assignment errors in code
+        index_dict = {}  # Just to avoid assignment errors in code
 
         if not del_dict:  # If this wasn't called to delete a dictionary this runs
             #  We convert the passed dictionary to a dictionary list so we can then pull value out we

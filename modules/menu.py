@@ -1,5 +1,5 @@
 from modules.create_char import char_creation
-from modules.custom_classes import Race, Archetype, Player
+from modules.custom_classes import Race, Archetype, Player, UserOptions
 from modules.opening_text import *
 
 
@@ -169,6 +169,7 @@ def races_admin_menu():
 
 def races_admin_edit(race, new=False):
     """The actual edit interface for races"""
+    edited: Race = Race()
     clear_screen()
     if new:
         typed_print(f"You've chosen to create a new Race.")
@@ -189,8 +190,10 @@ def races_admin_edit(race, new=False):
         print(ce, end='')
         if menu_choice.lower().capitalize() in field_dict:
             menu_choice = menu_choice.lower().capitalize()
-            edited_race = edit_class_data(pulled_race, menu_choice, field_dict)
-            if edited_race[1] is True:
+            edited_race = edit_class_data(pulled_race, menu_choice, field_dict, Race)
+            edited = edited_race[0]
+            success = edited_race[1]
+            if success is True:
                 print()
                 typed_print(f"{cy}SUCCESS!{ce}, enter another to edit, ({cb}C{ce}) to cancel,"
                             f" or ({cb}S{ce}) to save: {cb}", new_line=False)
@@ -201,7 +204,7 @@ def races_admin_edit(race, new=False):
         elif menu_choice.lower() == 'c':
             break
         elif menu_choice.lower() == 's':
-            save_dictionary(jsonpickle.encode(edited_race[0]), 'data/races.json', edited_race[0].Race_name)
+            save_dictionary(jsonpickle.encode(edited), 'data/races.json', edited.Race_name)
             break
         elif menu_choice.lower() == 'd':
             result = input(f'Are you SURE you wish to {cr}DELETE{ce} Race: {cb}{race}{ce} [yes,n]? ')
@@ -245,6 +248,7 @@ def options_menu():
 
 def options_edit(options):
     """The actual edit interface for options"""
+    edited: UserOptions = UserOptions()
     clear_screen()
     typed_print(f'You chose to edit {options}, here are the current values:')
     print()
@@ -262,8 +266,11 @@ def options_edit(options):
         print(ce, end='')
         if menu_choice.lower().capitalize() in field_dict:
             menu_choice = menu_choice.lower().capitalize()
-            edited_options = edit_class_data(pulled_options, menu_choice, field_dict)
-            if edited_options[1] is True:
+            edited_options = edit_class_data(pulled_options, menu_choice, field_dict, UserOptions)
+
+            edited = edited_options[0]
+            success = edited_options[1]
+            if success is True:
                 print()
                 typed_print(f"Value was updated, enter another to edit, (C) to cancel,"
                             f" or (S) to save: {cb}", new_line=False)
@@ -274,7 +281,7 @@ def options_edit(options):
         elif menu_choice.lower() == 'c':
             break
         elif menu_choice.lower() == 's':
-            save_dictionary(jsonpickle.encode(edited_options[0]), 'data/options.json', edited_options[0].Type)
+            save_dictionary(jsonpickle.encode(edited), 'data/options.json', edited.Type)
             break
         else:
             typed_print(f'Value entered: {cb}{menu_choice}{ce} is not valid, please reenter: {cb} ', new_line=False)
@@ -316,6 +323,7 @@ def archetype_admin_menu():
 
 def archetype_admin_edit(archetype, new=False):
     """The actual edit interface for archetype"""
+    edited: Archetype = Archetype()
     clear_screen()
     if new:
         typed_print(f"You've chosen to create a new Archetype.")
@@ -337,8 +345,10 @@ def archetype_admin_edit(archetype, new=False):
         print(ce, end='')
         if menu_choice.lower().capitalize() in field_dict:
             menu_choice = menu_choice.lower().capitalize()
-            edited_archetype = edit_class_data(pulled_archetype, menu_choice, field_dict)
-            if edited_archetype[1] is True:
+            edited_archetype = edit_class_data(pulled_archetype, menu_choice, field_dict, Archetype)
+            edited = edited_archetype[0]
+            success = edited_archetype[1]
+            if success is True:
                 print()
                 typed_print(f"Value was updated, enter another to edit or (S) to save: {cb}", new_line=False)
             else:
@@ -348,7 +358,7 @@ def archetype_admin_edit(archetype, new=False):
         elif menu_choice.lower() == 'c':
             break
         elif menu_choice.lower() == 's':
-            save_dictionary(jsonpickle.encode(edited_archetype[0]), 'data/archetype.json', edited_archetype[0].Name)
+            save_dictionary(jsonpickle.encode(edited), 'data/archetype.json', edited.Name)
             break
         elif menu_choice.lower() == 'd':
             result = input(f'Are you SURE you wish to {cr}DELETE{ce} Race: {cb}{archetype}{ce} [yes,n]? ')

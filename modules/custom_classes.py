@@ -1,7 +1,4 @@
-from collections import namedtuple
 from dataclasses import dataclass
-
-from typing import List
 
 
 @dataclass
@@ -81,6 +78,7 @@ class Archetype:
     Spell_type: str = None
     Description: str = ''
 
+
 @dataclass
 class SpellBook:
     Level_1: list
@@ -133,7 +131,3 @@ class Items:
     Uses: int = 0
     AC: int = 0
     Description: str = ''
-
-
-
-

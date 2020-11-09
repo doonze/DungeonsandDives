@@ -25,4 +25,3 @@ def pull_saved_data(path_file_name: str, index_name: str) -> UserOptions:
 
 user_options: UserOptions
 user_options = pull_saved_data('data/options.json', 'User Options')
-
