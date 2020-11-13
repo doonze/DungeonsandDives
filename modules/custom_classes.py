@@ -1,4 +1,6 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
+from typing import List, Tuple
 
 
 @dataclass
@@ -34,7 +36,7 @@ class Colors:
 @dataclass
 class Race:
     """
-    Enter as Race, Str, Dex, Con, Wis, Int, Cha, Height, Weight, Age
+    Enter as Race, Str, Dex, Con, Wis, Int, Cha, Height, Weight, Age, Desc
     """
 
     Race_name: str = 'New'
@@ -44,10 +46,10 @@ class Race:
     Wis: int = 0
     Int: int = 0
     Cha: int = 0
-    Height: list = 0
-    Weight: list = 0
-    Age: list = 0
-    Description: str = ''
+    Height: tuple = 0, 0
+    Weight: tuple = 0, 0
+    Age: tuple = 0, 0
+    Desc: str = ''
 
 
 @dataclass
@@ -62,9 +64,9 @@ class UserOptions:
 class Archetype:
     Name: str = "new"
     Hit_die: int = 0
-    Weapons: list = 'Simple'
-    Armor: list = 'None'
-    Items: list = 'torch'
+    Weapons: tuple = 'Enter: simple, light, medium, arms'
+    Armor: tuple = 'Enter: light, medium, heavy'
+    Items: tuple = 'backpack'
     Fitness: int = 0
     Nimbleness: int = 0
     Stealth: int = 0
@@ -76,7 +78,7 @@ class Archetype:
     Speech: int = 0
     Spells: bool = False
     Spell_type: str = None
-    Description: str = ''
+    Desc: str = ''
 
 
 @dataclass
@@ -94,11 +96,28 @@ class SpellBook:
 
 @dataclass
 class Spells:
-    Name: str
-    Level: int
-    Range: int
-    Damage: int
-    Description: str
+    Name: str = 'New'
+    Type: str = 'Enter: arcane, holy, or nature'
+    Level: int = 1
+    Range: int = 0
+    Damage: tuple = 0, 0
+    Desc: str = 'Spell description'
+
+
+@dataclass
+class Equipped:
+    Head: str = None
+    Neck: str = None
+    Armor: str = 'Old Shirt'
+    Waist: str = 'Cord Belt'
+    Wrist: str = None
+    Gloves: str = None
+    Right_finger: str = None
+    Left_finger: str = None
+    Legs: str = 'Old Pants'
+    Feet: str = 'Old Shoes'
+    Left_hand: str = None
+    Right_hand: str = None
 
 
 @dataclass
@@ -119,15 +138,21 @@ class Player:
     Height: str = ''
     Weight: int = 0
     Age: int = 0
+    Current_HP: int = 0
+    Inventory: List[str] = field(default_factory=list)
+    Player_EQ: Equipped = None
+    Carry_weight: float = 0.0
+    Current_weight: float = 0.0
 
 
 @dataclass
 class Items:
-    Name: str
-    Class: str
-    Type: str
-    Weight: float = 0.0
+    Name: str = 'Item name'
+    Class: str = 'Enter: common, magical, armor, weapon'
+    Type: str = 'Enter: simple, light, medium, heavy, arms'
     Damage_dice: tuple = (0, 0)
     Uses: int = 0
     AC: int = 0
-    Description: str = ''
+    Weight: float = 0
+    Desc: str = None
+
