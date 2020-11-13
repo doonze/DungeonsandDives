@@ -134,49 +134,58 @@ def char_class_build(char_build: Player, player_choice: str) -> dict:
     try:
         hit_die = char_build.Player_type.Hit_die
         con_mod = stat_bonus(char_build.Con)
+        dex_mod = stat_bonus(char_build.Dex)
         hp_roll = dice(hit_die, reroll_ones=True)
         tot_hp = hp_roll + con_mod + 8
         this_class = char_build.Player_type.Name
         this_race = char_build.Player_race.Race_name
         char_build.HP = tot_hp
 
-        # Now well figure out the base AC (10 + Dex mod) and add that to the dictionary
+        # Now well figure out the base AC (10 + Dex mod) and add that to the dataclass
         char_build.AC = 10 + stat_bonus(char_build.Dex)
+
+        # And the carry weight
+        char_build.Carry_weight = 10 * char_build.Str
 
         clear_screen()
         typed_print(f'You have chosen to become a {this_race} {this_class}!')
         print()
-        typed_print('Every race starts with 8 hit points. ')
-        typed_print(f'You rolled a d{hit_die} for class hit points getting a roll of {hp_roll}')
-        typed_print(f'with your constitution modifier of {con_mod} your total hit points are now {tot_hp}')
+        typed_print(f'Every race starts with {cb}8{ce} hit points. ')
+        typed_print(f'You rolled a {cb}d{hit_die}{ce} for class hit points getting a roll of {cb}{hp_roll}{ce}.')
+        typed_print(f'With your constitution modifier of {cb if con_mod >= 0 else cr}{con_mod}{ce} '
+                    f'your total hit points are now {cb}{tot_hp}{ce}')
         print()
-        typed_print(f'Your base armor class will be {char_build.AC}. (10 + Dexterity modifier)')
+        typed_print(f'Your base armor class will be {cb}{char_build.AC}{ce}. '
+                    f'(10 + Dexterity modifier of {cb if dex_mod >= 0 else cr}{dex_mod}{ce})')
         print()
-        char_build.Player_name = input('Now enter a name for you character, then review character creation: ')
+        typed_print(f'Your carry weight will be {cb}{char_build.Carry_weight} lbs{ce} This is figured by'
+                    f'(10 x Strength)')
+        typed_print('Now enter a name for your character, then review character creation: ', new_line=False)
+        char_build.Player_name = input()
 
         clear_screen()
 
         # Here we figure out what the final stats and modifiers are
         typed_print('Here are your final characters stats:')
         print()
-        typed_print(f"You are a {char_build.Player_race.Race_name} {char_build.Player_type.Name}"
-                    f" named {char_build.Player_name}")
-        typed_print(f"Height: {char_build.Height}")
-        typed_print(f"Weight: {char_build.Weight} lbs")
-        typed_print(f"Age: {char_build.Age}")
-        typed_print(f'Hit point: {char_build.HP}')
-        typed_print(f'Armor Class: {char_build.AC}')
+        typed_print(f"You are a {cb}{char_build.Player_race.Race_name} {char_build.Player_type.Name}{ce}"
+                    f" named {cy}{char_build.Player_name}{ce}.")
         print()
-        typed_print(f"{'Attribute':<14} {'Stat':<4} Mod")
+        typed_print(f"{'Height:':<14} {cb}{char_build.Height}{ce}")
+        typed_print(f"{'Weight:':<14} {cb}{char_build.Weight} lbs{ce}")
+        typed_print(f"{'Age:':<14} {cb}{char_build.Age}{ce}")
+        typed_print(f"{'Hit points:':<14} {cb}{char_build.HP}{ce}")
+        typed_print(f"{'Armor Class:':<14} {cb}{char_build.AC}{ce}")
+        print()
+        typed_print(f"{cbol}{lg}{'Attribute':<14} {'Stat':<4} Mod{ce}")
         typed_print('-----------------------')
-        typed_print(f"{'Strength:':<14} {char_build.Str:<4} {stat_bonus(char_build.Str, colored=True)}")
-        typed_print(f"{'Dexterity:':<14} {char_build.Dex:<4} {stat_bonus(char_build.Dex, colored=True)}")
-        typed_print(f"{'Constitution:':<14} {char_build.Con:<4} {stat_bonus(char_build.Con, colored=True)}")
-        typed_print(f"{'Wisdom:':<14} {char_build.Wis:<4} {stat_bonus(char_build.Wis, colored=True)}")
-        typed_print(f"{'Intelligence:':<14} {char_build.Int:<4} {stat_bonus(char_build.Int, colored=True)}")
-        typed_print(f"{'Charisma:':<14} {char_build.Cha:<4} {stat_bonus(char_build.Cha, colored=True)}")
+        typed_print(f"{'Strength:':<14} {cb}{char_build.Str:<4}{ce} {stat_bonus(char_build.Str, colored=True)}")
+        typed_print(f"{'Dexterity:':<14} {cb}{char_build.Dex:<4}{ce} {stat_bonus(char_build.Dex, colored=True)}")
+        typed_print(f"{'Constitution:':<14} {cb}{char_build.Con:<4}{ce} {stat_bonus(char_build.Con, colored=True)}")
+        typed_print(f"{'Wisdom:':<14} {cb}{char_build.Wis:<4}{ce} {stat_bonus(char_build.Wis, colored=True)}")
+        typed_print(f"{'Intelligence:':<14} {cb}{char_build.Int:<4}{ce} {stat_bonus(char_build.Int, colored=True)}")
+        typed_print(f"{'Charisma:':<14} {cb}{char_build.Cha:<4}{ce} {stat_bonus(char_build.Cha, colored=True)}")
         print()
-
         typed_print('Choose (A)ccept to continue with this character or (C) to try again [a,c]: ', new_line=False)
 
         while True:
