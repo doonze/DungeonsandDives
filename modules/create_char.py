@@ -176,6 +176,7 @@ def char_class_build(char_build: Player, player_choice: str) -> dict:
         typed_print(f"{'Age:':<14} {cb}{char_build.Age}{ce}")
         typed_print(f"{'Hit points:':<14} {cb}{char_build.HP}{ce}")
         typed_print(f"{'Armor Class:':<14} {cb}{char_build.AC}{ce}")
+        typed_print(f"{'Max Load:':14} {cb}{char_build.Carry_weight}{ce}")
         print()
         typed_print(f"{cbol}{lg}{'Attribute':<14} {'Stat':<4} Mod{ce}")
         typed_print('-----------------------')
