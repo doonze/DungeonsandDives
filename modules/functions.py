@@ -5,11 +5,13 @@ import os
 from dataclasses import fields
 from random import randint
 from random import random
+from textwrap import TextWrapper
 from time import sleep
 import jsonpickle
 from modules.custom_classes import Colors
 from modules.options import user_options
 
+wrapper = TextWrapper(width=70)
 cb = Colors.brown
 ce = Colors.end
 cr = Colors.red
@@ -330,11 +332,18 @@ def print_class_data(data_class: any, col_one: str = '<10', col_two: str = '<2')
     :return: Returns a list of the objects field names(key) and their types(value)
     :rtype: dict
     """
+
     try:
         field_dict = {}
         for field in fields(data_class):
             field_dict[field.name] = field.type
-            print(f'{field.name.capitalize():{col_one}}: {cb}{str(getattr(data_class, field.name)):{col_two}}{ce}')
+            if field.name == "Desc":
+                print()
+                print(f'{field.name}:')
+                print()
+                print(f'{cy}{wrapper.fill(str(getattr(data_class, field.name))):{col_two}}{ce}')
+            else:
+                print(f'{field.name:{col_one}}: {cb}{str(getattr(data_class, field.name)):{col_two}}{ce}')
         return field_dict
     except Exception as ex:
         print(f'Something went wrong printing class data: {ex}')
@@ -359,8 +368,8 @@ def edit_class_data(dataclass, menu_choice: str, field_dict: dict, class_type) -
     """
     dataclass: class_type
     try:
-        typed_print(f'Editing value {cb}[{menu_choice.capitalize()}]{ce}. Enter list separated by ",". '
-                    f'The current value is {cb}[{getattr(dataclass, menu_choice)}]{ce}: {cb}',
+        typed_print(f'Editing value {cb}[{menu_choice}]{ce}. Enter list separated by ",". '
+                    f'The current value is {cb}{getattr(dataclass, menu_choice)}]{ce}: {cb}',
                     new_line=False)
         set_type = field_dict[menu_choice]
         while True:
@@ -376,6 +385,16 @@ def edit_class_data(dataclass, menu_choice: str, field_dict: dict, class_type) -
                     else:
                         responses.append(each)
                 setattr(dataclass, menu_choice, set_type(responses))
+            elif set_type is tuple:
+                response = response.translate(str.maketrans('', '', ' ()'))
+                response = [i for i in response.split(',')]
+                for each in response:
+                    if each.isdigit():
+                        responses.append(int(each))
+                    else:
+                        responses.append(each)
+
+                setattr(dataclass, menu_choice, set_type((tuple(responses))))
             else:
                 if type(set_type(response)) == bool:
                     if response == 'False':
@@ -386,14 +405,13 @@ def edit_class_data(dataclass, menu_choice: str, field_dict: dict, class_type) -
                         raise Exception(f'"{cb}{response}{ce}" was not a True/False answer!')
                 setattr(dataclass, menu_choice, set_type(response))
             clear_screen()
-            typed_print(f'{cb}{menu_choice}{ce} was updated to {cb}{response}{ce}!')
+            typed_print(wrapper.fill(f'{cb}{menu_choice}{ce} was updated to {cb}{response}{ce}!'))
             print()
             print_class_data(dataclass)
             success = True
             return dataclass, success
     except Exception as ex:
-        exception_log('', ex)
-        # print(f'{cr}EXCEPTION RAISED:{ce} {ex}')
+        exception_log(f'{cr}EXCEPTION:{ce} Problem while editing class data - ', ex)
         success = False
         return dataclass, success
 
