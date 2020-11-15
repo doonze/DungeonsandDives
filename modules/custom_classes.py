@@ -45,9 +45,9 @@ class Race:
     Wis: int = 0
     Int: int = 0
     Cha: int = 0
-    Height: tuple = 0, 0
-    Weight: tuple = 0, 0
-    Age: tuple = 0, 0
+    Height: tuple = (0, 0)
+    Weight: tuple = (0, 0)
+    Age: tuple = (0, 0)
     Desc: str = ''
 
 
@@ -99,7 +99,7 @@ class Spells:
     Type: str = 'Enter: arcane, holy, or nature'
     Level: int = 1
     Range: int = 0
-    Damage: tuple = 0, 0
+    Damage: tuple = (0, 0)
     Desc: str = 'Spell description'
 
 
