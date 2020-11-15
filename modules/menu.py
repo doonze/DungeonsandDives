@@ -1,7 +1,9 @@
+import curses
+
 from modules.create_char import char_creation
 from modules.custom_classes import Race, Archetype, Player, UserOptions, Items
 from modules.opening_text import *
-from modules.main_game import start_game
+from modules.main_game import start_main
 
 
 # This is the initial start menu
@@ -83,10 +85,11 @@ def load_saved(saved_game: str):
     typed_print(f"You are a {cb}{char_build.Player_race.Race_name} {char_build.Player_type.Name}{ce}"
                 f" named {cy}{char_build.Player_name}{ce}.")
     print()
+    typed_print(f"{'Level:':<14} {cb}{char_build.Level}{ce}")
     typed_print(f"{'Height:':<14} {cb}{char_build.Height}{ce}")
     typed_print(f"{'Weight:':<14} {cb}{char_build.Weight} lbs{ce}")
     typed_print(f"{'Age:':<14} {cb}{char_build.Age}{ce}")
-    typed_print(f"{'Hit points:':<14} {cb}{char_build.HP}{ce}")
+    typed_print(f"{'Hit points:':<14} {cb}{char_build.Current_HP}{ce}")
     typed_print(f"{'Armor Class:':14} {cb}{char_build.AC}{ce}")
     typed_print(f"{'Load/Max Load:':14} {cb}{char_build.Current_weight}/{char_build.Carry_weight}{ce}")
     print()
@@ -106,7 +109,7 @@ def load_saved(saved_game: str):
         load_response = input()
         print(ce, end='')
         if load_response.lower() == 'l':
-            return start_game(saved_game)
+            return curses.wrapper(start_main, char_build)
         elif load_response.lower() == 'd':
             typed_print(f'{cr}WARNING!!!{ce} are you SURE you wish to delete saved game {cy}{saved_game}{ce}?'
                         f' {cb}[Yes,no]{ce}:{cb} ', new_line=False)

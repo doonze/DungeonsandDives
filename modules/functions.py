@@ -11,6 +11,7 @@ import jsonpickle
 from modules.custom_classes import Colors
 from modules.options import user_options
 
+
 wrapper = TextWrapper(width=70)
 cb = Colors.brown
 ce = Colors.end
@@ -466,3 +467,6 @@ def save_dictionary(save_dict: dict, path_file_name: str, index: str, del_dict=F
         f.close()
     except Exception as ex:
         exception_log(f'Something went wrong in the save_dictionary function - ', ex)
+
+
+

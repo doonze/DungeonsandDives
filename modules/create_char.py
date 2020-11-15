@@ -1,5 +1,7 @@
+import curses
+
 import modules.menu as menu
-from modules.main_game import start_game
+from modules.main_game import start_main
 from modules.custom_classes import *
 from modules.functions import *
 
@@ -139,7 +141,7 @@ def char_class_build(char_build: Player, player_choice: str) -> dict:
         tot_hp = hp_roll + con_mod + 8
         this_class = char_build.Player_type.Name
         this_race = char_build.Player_race.Race_name
-        char_build.HP = tot_hp
+        char_build.Max_HP = tot_hp
 
         # Now well figure out the base AC (10 + Dex mod) and add that to the dataclass
         char_build.AC = 10 + stat_bonus(char_build.Dex)
@@ -174,7 +176,7 @@ def char_class_build(char_build: Player, player_choice: str) -> dict:
         typed_print(f"{'Height:':<14} {cb}{char_build.Height}{ce}")
         typed_print(f"{'Weight:':<14} {cb}{char_build.Weight} lbs{ce}")
         typed_print(f"{'Age:':<14} {cb}{char_build.Age}{ce}")
-        typed_print(f"{'Hit points:':<14} {cb}{char_build.HP}{ce}")
+        typed_print(f"{'Hit points:':<14} {cb}{char_build.Max_HP}{ce}")
         typed_print(f"{'Armor Class:':<14} {cb}{char_build.AC}{ce}")
         typed_print(f"{'Max Load:':14} {cb}{char_build.Carry_weight}{ce}")
         print()
@@ -192,8 +194,9 @@ def char_class_build(char_build: Player, player_choice: str) -> dict:
         while True:
             final_choice = input()
             if final_choice.lower() == 'a':
+                char_build.Current_HP = char_build.Max_HP
                 save_dictionary(jsonpickle.encode(char_build), 'saves/char.json', char_build.Player_name)
-                return start_game(char_build.Player_name)
+                return curses.wrapper(start_main, char_build)
             elif final_choice.lower() == 'c':
                 return menu.start_menu()
             else:

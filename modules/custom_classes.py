@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-
 from typing import List, Tuple
 
 
@@ -126,7 +125,7 @@ class Player:
     Player_race: Race = None
     Player_type: Archetype = None
     Player_spells: SpellBook = None
-    HP: int = 0
+    Max_HP: int = 0
     AC: int = 0
     XP: int = 0
     Str: int = 0
@@ -143,6 +142,7 @@ class Player:
     Player_EQ: Equipped = None
     Carry_weight: float = 0.0
     Current_weight: float = 0.0
+    Level: int = 1
 
 
 @dataclass
@@ -155,4 +155,18 @@ class Items:
     AC: int = 0
     Weight: float = 0
     Desc: str = None
+
+
+@dataclass
+class SubWin:
+    """
+    ht = Height of subwin\n
+    lg = Length of subwin\n
+    y = Y starting location\n
+    x = X starting locaton\n
+    """
+    ht: int
+    lg: int
+    y: int
+    x: int
 
