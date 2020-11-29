@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
 
 @dataclass
@@ -38,7 +38,7 @@ class Race:
     Enter as Race, Str, Dex, Con, Wis, Int, Cha, Height, Weight, Age, Desc
     """
 
-    Race_name: str = 'New'
+    Name: str = 'New'
     Str: int = 0
     Dex: int = 0
     Con: int = 0
@@ -105,26 +105,27 @@ class Spells:
 
 @dataclass
 class Equipped:
-    Head: str = None
-    Neck: str = None
-    Armor: str = 'Old Shirt'
-    Waist: str = 'Cord Belt'
-    Wrist: str = None
-    Gloves: str = None
-    Right_finger: str = None
-    Left_finger: str = None
-    Legs: str = 'Old Pants'
-    Feet: str = 'Old Shoes'
-    Left_hand: str = None
-    Right_hand: str = None
+    name: str
+    Head: tuple
+    Neck: tuple
+    Armor: tuple
+    Waist: tuple
+    Wrist: tuple
+    Gloves: tuple
+    Right_finger: tuple
+    Left_finger: tuple
+    Legs: tuple
+    Feet: tuple
+    Left_hand: tuple
+    Right_hand: tuple
 
 
 @dataclass
 class Player:
     Player_name: str = ''
-    Player_race: Race = None
-    Player_type: Archetype = None
-    Player_spells: SpellBook = None
+    Player_race: str = ''
+    Player_type: str = ''
+    Player_spells: str = ''
     Max_HP: int = 0
     AC: int = 0
     XP: int = 0
@@ -138,22 +139,27 @@ class Player:
     Weight: int = 0
     Age: int = 0
     Current_HP: int = 0
-    Inventory: List[str] = field(default_factory=list)
+    Inventory: Dict[int, type] = field(default_factory=dict)
     Player_EQ: Equipped = None
     Carry_weight: float = 0.0
     Current_weight: float = 0.0
     Level: int = 1
+    Race_details: Race = None
+    Arch_details: Archetype = None
 
 
 @dataclass
 class Items:
     Name: str = 'Item name'
+    UUID: str = 0
     Class: str = 'Enter: common, magical, armor, weapon'
     Type: str = 'Enter: simple, light, medium, heavy, arms'
     Damage_dice: tuple = (0, 0)
     Uses: int = 0
     AC: int = 0
     Weight: float = 0
+    Wear: float = 0
+    Wear_chance: float = 50
     Desc: str = None
 
 
@@ -170,3 +176,62 @@ class SubWin:
     y: int
     x: int
 
+
+@dataclass
+class NPC:
+    NPC_name: str = ''
+    NPC_race: Race = None
+    NPC_type: Archetype = None
+    NPC_spells: SpellBook = None
+    Max_HP: int = 0
+    AC: int = 0
+    Str: int = 0
+    Dex: int = 0
+    Con: int = 0
+    Wis: int = 0
+    Int: int = 0
+    Cha: int = 0
+    Height: str = ''
+    Weight: int = 0
+    Age: int = 0
+    Current_HP: int = 0
+    Inventory: List[str] = field(default_factory=list)
+    NPC_EQ: Equipped = None
+    Level: int = 1
+
+
+@dataclass
+class NPCRace:
+    """
+    Enter as Race, Str, Dex, Con, Wis, Int, Cha, Height, Weight, Age, Aggro, Aggro_pct, Desc
+    """
+
+    Name: str = 'New'
+    Str: int = 0
+    Dex: int = 0
+    Con: int = 0
+    Wis: int = 0
+    Int: int = 0
+    Cha: int = 0
+    Height: tuple = (0, 0)
+    Weight: tuple = (0, 0)
+    Age: tuple = (0, 0)
+    Aggro: bool = True
+    Aggro_pct: int = 90
+    Desc: str = ' '
+
+
+@dataclass
+class Inventory:
+    Player_name: str = ''
+    Name: str = ''
+    UUID: int = 0
+    Class: str = ''
+    Type: str = ''
+    Damage_dice: tuple = (0, 0)
+    Uses: int = 0
+    AC: int = 0
+    Weight: float = 0
+    Wear: float = 0
+    Wear_chance: float = 0
+    Desc: str = ''

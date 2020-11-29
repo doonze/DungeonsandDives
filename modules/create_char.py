@@ -1,6 +1,8 @@
 import curses
 
 import modules.menu as menu
+from modules.db_functions import db_create_connection, db_select_values_where, db_return_class_object, db_select_values, \
+    db_insert_class_in_table, db_insert_inventory_char_creation
 from modules.main_game import start_main
 from modules.custom_classes import *
 from modules.functions import *
@@ -9,9 +11,13 @@ from modules.functions import *
 # This function lets you pick your race
 def char_creation():
     clear_screen()
-
-    pulled_saved_items = pull_saved_data_indexes('data/races.json')
-    item_dict = list_to_num_dict(pulled_saved_items)
+    races_list = []
+    conn = db_create_connection('db/dnd.db')
+    results = db_select_values(conn, 'races', 'name')
+    for row in results:
+        races_list.append(row['name'])
+    conn.close()
+    item_dict = list_to_num_dict(races_list)
     typed_print("Now let's pick a race!")
     print()
     print_list(item_dict, var_type='dict')
@@ -34,21 +40,25 @@ def char_creation():
 def new_char_race(race):
     # This creates the new_char_stats dictionary, pulls the race settings from the races.py file
     # and randomly creates the details of the character using the parameters specified in the races file.
-    pulled_race = pull_saved_data('data/races.json', race)
+
+    conn = db_create_connection('db/dnd.db')
+    pulled_race: Race = db_return_class_object(conn, 'races', 'name', race, Race)
+    conn.close()
+
     first_run: bool = True
 
     def roll_char():
-        pre_char_build = Player(Player_race=pulled_race)
-        pre_char_build.Str = dice(6, rolls=3, reroll_ones=True) + pre_char_build.Player_race.Str
-        pre_char_build.Dex = dice(6, rolls=3, reroll_ones=True) + pre_char_build.Player_race.Dex
-        pre_char_build.Con = dice(6, rolls=3, reroll_ones=True) + pre_char_build.Player_race.Con
-        pre_char_build.Wis = dice(6, rolls=3, reroll_ones=True) + pre_char_build.Player_race.Wis
-        pre_char_build.Int = dice(6, rolls=3, reroll_ones=True) + pre_char_build.Player_race.Int
-        pre_char_build.Cha = dice(6, rolls=3, reroll_ones=True) + pre_char_build.Player_race.Cha
-        pre_char_build.Height = feet_inch(randint(int(pre_char_build.Player_race.Height[0]),
-                                                  int(pre_char_build.Player_race.Height[1])))
-        pre_char_build.Weight = randint(pre_char_build.Player_race.Weight[0], pre_char_build.Player_race.Weight[1])
-        pre_char_build.Age = randint(pre_char_build.Player_race.Age[0], pre_char_build.Player_race.Age[1])
+        pre_char_build = Player(Player_race=pulled_race.Name)
+        pre_char_build.Str = dice(6, rolls=3, reroll_ones=True) + pulled_race.Str
+        pre_char_build.Dex = dice(6, rolls=3, reroll_ones=True) + pulled_race.Dex
+        pre_char_build.Con = dice(6, rolls=3, reroll_ones=True) + pulled_race.Con
+        pre_char_build.Wis = dice(6, rolls=3, reroll_ones=True) + pulled_race.Wis
+        pre_char_build.Int = dice(6, rolls=3, reroll_ones=True) + pulled_race.Int
+        pre_char_build.Cha = dice(6, rolls=3, reroll_ones=True) + pulled_race.Cha
+        pre_char_build.Height = feet_inch(randint(int(pulled_race.Height[0]),
+                                                  int(pulled_race.Height[1])))
+        pre_char_build.Weight = randint(pulled_race.Weight[0], pulled_race.Weight[1])
+        pre_char_build.Age = randint(pulled_race.Age[0], pulled_race.Age[1])
 
         # Here we figure out what the modifiers are for the above rolled stats
         str_bonus = stat_bonus(int(pre_char_build.Str), colored=True)
@@ -62,7 +72,7 @@ def new_char_race(race):
         # Here we start printing out the created character stats
         typed_print('Here are your characters stats:')
         print()
-        typed_print(f"Race: {cb}{pre_char_build.Player_race.Race_name}{ce}")
+        typed_print(f"Race: {cb}{pre_char_build.Player_race}{ce}")
         typed_print(f"Height: {cb}{pre_char_build.Height}{ce}")
         typed_print(f"Weight: {cb}{pre_char_build.Weight} lbs{ce}")
         typed_print(f"Age: {cb}{pre_char_build.Age}{ce}")
@@ -104,9 +114,14 @@ def new_char_race(race):
 # created in the previous function. This is so it can then be passed on and added to by the class creation function
 def char_class_choice(char_build: Player):
     clear_screen()
-    pulled_saved_items = pull_saved_data_indexes('data/archetype.json')
-    item_dict = list_to_num_dict(pulled_saved_items)
-    typed_print(f'Now choose an Archetype for your {char_build.Player_race.Race_name}!')
+    pulled_archetypes = []
+    conn = db_create_connection()
+    archetype_returned = db_select_values(conn, 'archetype', 'name')
+    for row in archetype_returned:
+        pulled_archetypes.append(row['name'])
+    conn.close()
+    item_dict = list_to_num_dict(pulled_archetypes)
+    typed_print(f'Now choose an Archetype for your {char_build.Player_race}!')
     print()
     print_list(item_dict, var_type='dict')
     print()
@@ -128,19 +143,20 @@ def char_class_choice(char_build: Player):
 # Once a class is chosen, here we start building the final aspects of the character, the new_char_stats dictionary
 # has been passed down to the function and renamed char_stats
 def char_class_build(char_build: Player, player_choice: str) -> dict:
-    pulled_archetype = pull_saved_data('data/archetype.json', player_choice)
-    char_build.Player_type = pulled_archetype
+    conn = db_create_connection()
+    pulled_archetype: Archetype = db_return_class_object(conn, 'archetype', 'name', player_choice, Archetype)
+    char_build.Player_type = pulled_archetype.Name
 
     # Here we're going to roll for hit points, breaking the processes out into the different parts so we can
     # lay it all out for the user then add the total hit points rolled into the dictionary
     try:
-        hit_die = char_build.Player_type.Hit_die
+        hit_die = pulled_archetype.Hit_die
         con_mod = stat_bonus(char_build.Con)
         dex_mod = stat_bonus(char_build.Dex)
         hp_roll = dice(hit_die, reroll_ones=True)
         tot_hp = hp_roll + con_mod + 8
-        this_class = char_build.Player_type.Name
-        this_race = char_build.Player_race.Race_name
+        this_class = char_build.Player_type
+        this_race = char_build.Player_race
         char_build.Max_HP = tot_hp
 
         # Now well figure out the base AC (10 + Dex mod) and add that to the dataclass
@@ -170,7 +186,7 @@ def char_class_build(char_build: Player, player_choice: str) -> dict:
         # Here we figure out what the final stats and modifiers are
         typed_print('Here are your final characters stats:')
         print()
-        typed_print(f"You are a {cb}{char_build.Player_race.Race_name} {char_build.Player_type.Name}{ce}"
+        typed_print(f"You are a {cb}{char_build.Player_race} {char_build.Player_type}{ce}"
                     f" named {cy}{char_build.Player_name}{ce}.")
         print()
         typed_print(f"{'Height:':<14} {cb}{char_build.Height}{ce}")
@@ -191,13 +207,26 @@ def char_class_build(char_build: Player, player_choice: str) -> dict:
         print()
         typed_print('Choose (A)ccept to continue with this character or (C) to try again [a,c]: ', new_line=False)
 
+
         while True:
             final_choice = input()
             if final_choice.lower() == 'a':
                 char_build.Current_HP = char_build.Max_HP
-                save_dictionary(jsonpickle.encode(char_build), 'saves/char.json', char_build.Player_name)
+                # Figure out what the starting inventory is
+                starting_inv = {}
+                num = 0
+                conn = db_create_connection()
+                for each in pulled_archetype.Items:
+                    item = db_return_class_object(conn, 'items', 'name', each, Items)
+                    starting_inv[num] = map_items_to_inventory(item, char_build.Player_name)
+                    num += 1
+                # write it all off to the DB
+                db_insert_class_in_table(conn, char_build, 'saves')
+                db_insert_inventory_char_creation(conn, starting_inv)
+                conn.close()
                 return curses.wrapper(start_main, char_build)
             elif final_choice.lower() == 'c':
+                conn.close()
                 return menu.start_menu()
             else:
                 typed_print('Choice was not valid. Enter A or C! [a,c]: ', new_line=False)

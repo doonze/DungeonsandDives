@@ -1,9 +1,13 @@
-# Dungeons And Dives main file
-from modules.menu import *
+# Dungeons And Dives start_map_maker file
+from modules.functions import clear_screen
+from modules.menu import start_menu
 from modules.options import user_options
 
-# This is the main script for the program
+# This is the start_map_maker script for the program
+from modules.opening_text import opening_banner
+
 if __name__ == '__main__':
+
     if user_options.Loading_screen:
         opening_banner()
     clear_screen()

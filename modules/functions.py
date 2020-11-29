@@ -1,5 +1,5 @@
 # Dungeons and Dives functions
-import json
+
 import logging
 import os
 from dataclasses import fields
@@ -7,10 +7,9 @@ from random import randint
 from random import random
 from textwrap import TextWrapper
 from time import sleep
-import jsonpickle
-from modules.custom_classes import Colors
+from modules.custom_classes import Colors, Items, Inventory
 from modules.options import user_options
-
+from uuid import uuid4
 
 wrapper = TextWrapper(width=70)
 cb = Colors.brown
@@ -184,42 +183,12 @@ def feet_inch(inches: int) -> str:
     return result
 
 
-def save_char(save_dict: dict, file_name: str) -> None:
-    """
-    Pass function a character dictionary and a file name. It will save it to the specified file.
-
-    If the file exist it will append to it, if not it will create it.
-
-    :param save_dict: Dictionary to save
-    :type save_dict: dict
-    :param file_name: Filename to save to
-    :type file_name: str
-     """
-    try:
-        save_dict = [save_dict]
-        keyed_dict = dict((item['name'], item) for item in save_dict)
-
-        if os.path.exists(f'saves/{file_name}.json'):
-            with open(f'saves/{file_name}.json') as f:
-                loaded_json = json.load(f)
-            loaded_json.update(keyed_dict)
-            json_save = json.dumps(loaded_json, indent=2)
-        else:
-            json_save = json.dumps(keyed_dict, indent=2)
-
-        f = open(f"saves/{file_name}.json", 'w')
-        f.write(json_save)
-        f.close()
-    except Exception as ex:
-        print(f'Something went wrong converting list to numbered dictionary: {ex}')
-
-
-def list_to_num_dict(char_list: list) -> dict:
+def list_to_num_dict(list_of: list) -> dict:
     """
     Pass this function a list and it will turn it into a numbered dictionary
 
-    :param char_list: Pass a list type object
-    :type char_list: list
+    :param list_of: Pass a list type object
+    :type list_of: list
     :return: Returns a dictionary with numbers for keys
     :rtype: dict
     """
@@ -227,8 +196,8 @@ def list_to_num_dict(char_list: list) -> dict:
         name_dict = {}
         num = 1
 
-        for name in char_list:
-            name_dict[f'{num}'] = name
+        for each in list_of:
+            name_dict[f'{num}'] = each
             num += 1
 
         return name_dict
@@ -276,48 +245,6 @@ def print_list(input_var, var_type='dict', begin='', end='', new_line=True) -> N
                 typed_print(f'{Colors.brown}({i}){Colors.end} {input_var[i]}')
     except Exception as ex:
         print(f'Something went wrong printing from list in print_list: {ex}')
-
-
-def pull_saved_data_indexes(path_file_name) -> list:
-    """
-    Pulls all the "indexes" from a saved json file. As all our saved data are indexed]
-    dictionaries of dictionaries this pulls all the main index keys for that file.
-
-    :param path_file_name: path/filename.extension format
-    :type path_file_name: str
-    :return: Returns a list of the indexes
-    :rtype: list
-    """
-    try:
-        with open(f'{path_file_name}') as f:
-            loaded_json = json.load(f)
-            index_list = []
-            for index in loaded_json:
-                index_list.append(index)
-            return sorted(index_list, key=str.lower)
-    except Exception as ex:
-        print(f'Something went wrong pulling saved data indexes from dictionary: {ex}')
-
-
-def pull_saved_data(path_file_name: str, index_name: str) -> any:
-    """
-    Pulls data from provided path for the provided index, returns a class object filled with the data from file
-
-    :param path_file_name: path/filename.extension format
-    :type path_file_name: str
-    :param index_name: Index to pull info from in file
-    :type index_name: str
-    :return: Returns a dataclass object
-    :rtype: any
-    """
-    try:
-        with open(f'{path_file_name}') as f:
-            loaded_json = json.load(f)
-            index_dict = loaded_json[index_name]
-            filled_class = jsonpickle.decode(index_dict)
-            return filled_class
-    except Exception as ex:
-        print(f'Something went wrong pulling saved data: {ex}')
 
 
 def print_class_data(data_class: any, col_one: str = '<10', col_two: str = '<2') -> dict:
@@ -370,16 +297,16 @@ def edit_class_data(dataclass, menu_choice: str, field_dict: dict, class_type) -
     dataclass: class_type
     try:
         typed_print(f'Editing value {cb}[{menu_choice}]{ce}. Enter list separated by ",". '
-                    f'The current value is {cb}{getattr(dataclass, menu_choice)}]{ce}: {cb}',
+                    f'The current value is {cb}[{getattr(dataclass, menu_choice)}]{ce}: {cb}',
                     new_line=False)
         set_type = field_dict[menu_choice]
         while True:
-            response = input()
+            response = input().strip()
             print(ce, end='')
             responses = []
             if set_type is list:
-                response = response.translate(str.maketrans('', '', ' []'))
-                response = [i for i in response.split(',')]
+                response = response.translate(str.maketrans('', '', '[]'))
+                response = [i.strip() for i in response.split(',')]
                 for each in response:
                     if each.isdigit():
                         responses.append(int(each))
@@ -387,8 +314,8 @@ def edit_class_data(dataclass, menu_choice: str, field_dict: dict, class_type) -
                         responses.append(each)
                 setattr(dataclass, menu_choice, set_type(responses))
             elif set_type is tuple:
-                response = response.translate(str.maketrans('', '', ' ()'))
-                response = [i for i in response.split(',')]
+                response = response.translate(str.maketrans('', '', '()'))
+                response = [i.strip() for i in response.split(',')]
                 for each in response:
                     if each.isdigit():
                         responses.append(int(each))
@@ -417,56 +344,42 @@ def edit_class_data(dataclass, menu_choice: str, field_dict: dict, class_type) -
         return dataclass, success
 
 
-def save_dictionary(save_dict: dict, path_file_name: str, index: str, del_dict=False) -> None:
+def create_uuid():
     """
-     Pass function a dictionary (save_dict), a full path name (path_file_name), and the key
-    you want the dictionary to be indexed by (index). You can also pass a empty dictionary, a path,
-    an index to delete, and the del_dict=TRUE bool to delete a dictionary index.
+    Creates then returns a UUID
 
-     It will create the file if it doesn't exist or append to the file if it does,
-    creating a dictionary of dictionaries indexed by (index). Files are saved in json format.
-
-    Valid paths:
-     data/races.json\n
-     data/classes.json\n
-     data/options.json\n
-     saves/char.json\n
-
-     :param save_dict: Dictionary to save to file (not used for deletes)
-     :type save_dict: typing._SpecialForm
-     :param path_file_name: path/filename.extension format
-     :type path_file_name: str
-     :param index: Index to save it into the file under (or to delete)
-     :type index: str
-     :param del_dict: Bool on if the is for deleting a dictionary
-     :type del_dict: bool
-     """
-    try:
-        index_dict = {}  # Just to avoid assignment errors in code
-
-        if not del_dict:  # If this wasn't called to delete a dictionary this runs
-            #  We convert the passed dictionary to a dictionary list so we can then pull value out we
-            #  want to index by. Then we index the whole dictionary by that value.
-            # save_dict = [save_dict]
-            index_dict = {index: save_dict}
-            # keyed_dict = dict((item[index], item) for item in save_dict)
-
-        if os.path.exists(f'{path_file_name}'):
-            with open(f'{path_file_name}') as f:
-                loaded_json = json.load(f)
-            if del_dict:  # If it was called to delete a dictionary just need the index to delete
-                loaded_json.pop(index)  # This pops (deletes) the passed index name from dictionary
-            else:
-                loaded_json.update(index_dict)  # Adds the indexed dictionary to the existing dictionary of dictionaries
-            json_save = json.dumps(loaded_json, indent=4)  # Then converts it to a json
-        else:  # If file didn't already exist we create it with one single dict inside
-            json_save = json.dumps(index_dict, indent=4)
-
-        f = open(f"{path_file_name}", 'w')
-        f.write(json_save)
-        f.close()
-    except Exception as ex:
-        exception_log(f'Something went wrong in the save_dictionary function - ', ex)
+    :return: Hex UUID string
+    :rtype: str
+    """
+    id_hex = uuid4()
+    return id_hex.hex
 
 
+def map_items_to_inventory(item, player_name):
+    """
+    Function to turn standard world items into inventory items. Every item becomes a unique item when added
+    to inventory.
 
+    :param item: Item dataclass object
+    :type item: any
+    :param player_name: Player who's item it's now become
+    :type player_name: str
+    :return: Returns a unique inventory dataclass item
+    :rtype: any
+    """
+    item: Items = item
+    inv: Inventory = Inventory()
+    inv.Player_name = player_name
+    inv.Name = item.Name
+    inv.UUID = create_uuid()
+    inv.Class = item.Class
+    inv.Type = item.Type
+    inv.Damage_dice = item.Damage_dice
+    inv.Uses = item.Uses
+    inv.AC = item.AC
+    inv.Weight = item.Weight
+    inv.Wear = item.Wear
+    inv.Wear_chance = item.Wear_chance
+    inv.Desc = item.Desc
+
+    return inv
