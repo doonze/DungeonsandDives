@@ -270,8 +270,8 @@ def db_delete_row(conn, table, where, where_what):
     :type where: str
     :param where_what: Value to use to find row in column
     :type where_what: str
-    :return: Returns query rowcount
-    :rtype: int
+    :return: Returns query rowcount as integer
+    :rtype: any
     """
     param = [where_what]
     sql = f'DELETE FROM {table} WHERE {where} = ?'

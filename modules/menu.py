@@ -1,3 +1,4 @@
+# Main menu structure file
 import curses
 from modules.db_functions import db_create_connection, db_select_values_where, db_return_class_object, \
     db_insert_class_in_table, db_update_class_in_table, db_delete_row, db_select_values, db_create_inventory_dict

@@ -1,7 +1,7 @@
+# Char creation file
 import curses
-
 import modules.menu as menu
-from modules.db_functions import db_create_connection, db_select_values_where, db_return_class_object, db_select_values, \
+from modules.db_functions import db_create_connection, db_return_class_object, db_select_values, \
     db_insert_class_in_table, db_insert_inventory_char_creation
 from modules.main_game import start_main
 from modules.custom_classes import *

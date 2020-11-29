@@ -1,3 +1,4 @@
+# Opening banner and test file
 from modules.functions import *
 from modules.terminalsize import get_terminal_size
 

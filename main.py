@@ -1,4 +1,5 @@
-# Dungeons And Dives start_map_maker file
+#!/usr/bin/env python
+# Dungeons And Dives main launch file
 from modules.functions import clear_screen
 from modules.menu import start_menu
 from modules.options import user_options
@@ -13,4 +14,3 @@ if __name__ == '__main__':
     clear_screen()
     start_menu()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/

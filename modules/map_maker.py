@@ -1,24 +1,23 @@
 # Main map making file
 from pickle import loads
-
 from modules.db_functions import db_select_values_where, db_update_value, db_delete_row
 from modules.map_classes import *
-
-# from modules.map_classes import MapYXZ, ZoneMapList, Wall
 from modules.map_db_functions import db_pull_saved_map_to_dict, db_create_connection, db_select_value_distinct, \
     db_insert_point_data, db_select_values_distinct
+import curses
+import curses.textpad
+import curses.panel
+import locale
+from modules.functions import clear_screen, print_list, list_to_num_dict, cb, ce, cy, print_class_data,\
+    edit_class_data
+from modules.map_functions import input_list, set_colors
+
+locale.setlocale(locale.LC_ALL, '')
+
+
 
 try:
-    import curses
-    import curses.textpad
-    import curses.panel
-    import locale
-    from modules.functions import save_dictionary, pull_saved_data, clear_screen, print_list, \
-        list_to_num_dict, cb, ce, cy, print_class_data, edit_class_data
-    import jsonpickle
-    from modules.map_functions import input_list, set_colors, pull_saved_map, save_map, pull_maps
 
-    locale.setlocale(locale.LC_ALL, '')
 
 
     def start_map_maker(screen, map_to_pull: MapYXZ):
@@ -254,7 +253,6 @@ try:
                         print(edited_data)
                     elif choice == '':
                         break
-
 
 
 except Exception as ex:

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# Module to get terminal size info
 import os
 import shlex
 import struct

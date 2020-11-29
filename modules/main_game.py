@@ -1,4 +1,4 @@
-# This is the start_map_maker game file
+# This is the actual launce of the game
 try:
     import curses
     from modules.custom_classes import Player, SubWin

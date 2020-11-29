@@ -1,8 +1,6 @@
 # module for map related database functions
 import sqlite3
 from pickle import dumps, loads
-from typing import List
-
 from modules.map_classes import MapYXZ
 
 
@@ -91,6 +89,10 @@ def db_select_values_distinct(conn, table, value, where, where_what) -> list:
     :type table: str
     :param value: Column value(s) to pull
     :type value: str
+    :param where: Where column for locating row
+    :type where: str
+    :param where_what: Where value to find row
+    :type where_what: str
     :return: list
     :rtype: list
     """
